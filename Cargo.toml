@@ -1,10 +1,9 @@
 # WASM Notes:
-# This is the Package **manifest**. Configuring cargo to compile for the
-# wasm32-unknown-unknown target requires creating a Cargo **config** toml file.
-# Refer to .cargo/config file for [build] target=..., etc.
+# Configuring cargo to compile for the wasm32-unknown-unknown target requires
+# creating a Cargo config toml file. See .cargo/config
 
 [package]
-name = "wasm"
+name = "ime-engine"
 version = "0.1.0"
 authors = ["samblenny"]
 edition = "2018"
