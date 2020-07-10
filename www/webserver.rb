@@ -4,20 +4,15 @@
 require 'webrick'
 
 # Cargo doesn't include a way to do a post-build copy yet, so do this...
-print "Overwrite debug.wasm with a fresh copy from ../target? [y/N]: "
+print "Overwrite debug.wasm with fresh build from ../target? [y/N]: "
 if ["Y", "y"].include? gets.chomp
   if File.exist? "../target/wasm32-unknown-unknown/debug/wasm.wasm"
-    puts "getting a fresh copy of debug.wasm"
     `cp ../target/wasm32-unknown-unknown/debug/wasm.wasm debug.wasm`
   else
     abort "Can't the find the .wasm file in ../target. Try a `cargo build`."
   end
-else
-  if File.exist? "debug.wasm"
-    puts "Using existing copy of debug.wasm"
-  else
+elsif !File.exist? "debug.wasm"
     abort "Debug.wasm is missing. Try a `cargo build`."
-  end
 end
 
 more_mime_types = {"wasm" => "application/wasm"}
