@@ -53,8 +53,8 @@ include vocabulary tables of pinyin spellings for all the 汉字 on the HSK
 vocabulary lists.
 
 **Romanization:** Text from a writing system that does not use the Latin
-alphabet can be romanized by following some system of rules for transliterating
+alphabet can be *romanized* by following some system of rules for transliterating
 that writing into words spelled with the Latin alphabet.
 
-**SRS:** Spaced Repetition (SRS) is a system developed by Dr. Pitt's Wozniak for
+**SRS:** Spaced Repetition (SRS) is a system developed by Dr. Piotr Wozniak for
 efficiently learning and remembering large vocabulary lists.
