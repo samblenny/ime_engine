@@ -1,0 +1,23 @@
+# WASM Notes:
+# This is the Package **manifest**. Configuring cargo to compile for the
+# wasm32-unknown-unknown target requires creating a Cargo **config** toml file.
+# Refer to .cargo/config file for [build] target=..., etc.
+
+[package]
+name = "wasm"
+version = "0.1.0"
+authors = ["samblenny"]
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+# Normal debug stuff doesn't work well with WASM, so have `cargo build` do less.
+[profile.dev]
+debug = 0
+debug-assertions = false
+lto = true
+opt-level = "s"
+
+[dependencies]
+

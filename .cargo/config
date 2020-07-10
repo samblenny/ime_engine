@@ -1,0 +1,10 @@
+# This lets cargo build work for wasm... no need for wasm-pack or wasm-bindgen
+[build]
+target = "wasm32-unknown-unknown"
+incremental = false
+
+[profile.dev]
+panic = "abort"
+
+[profile.release]
+panic = "abort"
