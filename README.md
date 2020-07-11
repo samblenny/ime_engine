@@ -22,9 +22,9 @@ consider this vaporware. I'll remove this note if I make sufficient progress.**
 
 ## What problems does IME-Engine hope to solve?
 
-1. **Embeddable IME for web apps:** Provide a small, simple, fast IME back-end
-   that can be packaged as a WASM module for use in an SRS vocabulary web app
-   with fill-in-the-blank questions.
+1. **Embeddable IME back-end for web apps:** Provide a small, simple, fast IME
+   back-end that can be packaged as a WASM module for use in an SRS vocabulary
+   web app with fill-in-the-blank questions.
 
 2. **Match IME spelling to textbook spelling:** Provide a way to avoid spelling
    confusion between IME and textbook. For vocabulary practice software,
