@@ -31,6 +31,9 @@ consider this vaporware. I'll remove this note if I make sufficient progress.**
    students can get stuck if the IME does not respond appropriately to
    correctly typed romanized spellings from the textbook.
 
+3. **Vocab list data entry workflow:** Provide methods and tools to assist with
+   accurately typing in vocab lists and comparing them to official word lists.
+
 
 ## Roadmap
 
