@@ -3,7 +3,6 @@ require "zlib"
 require "set"
 
 ARCHIVE = "official/hsk2012.gz"
-CHECKS = { "hsk1.tsv" => "hsk1" }
 
 def get_official_words(key)
   buf = Zlib::GzipReader.open(ARCHIVE) { |gz| gz.read }
@@ -41,10 +40,11 @@ for key in counts.keys.sort
 end
 
 puts "Comparing TSV data entry with offical word lists..."
-for tsv_filename, archive_key in CHECKS.each_pair
+checks = { hsk1: "hsk1.tsv" }
+for archive_key, tsv_filename in checks.each_pair
   tsv_lines = get_tsv_words(tsv_filename)
   tsv_words = Set.new(tsv_lines)
-  archive_words = Set.new(get_official_words(archive_key))
+  archive_words = Set.new(get_official_words(archive_key.to_s))
   puts " #{tsv_filename}:"
   puts "  #{tsv_lines.size} lines, #{tsv_words.size} unique words"
   if archive_words == tsv_words
