@@ -12,7 +12,7 @@ function unpack_message(msg_len) {
 
 var importObject = {js: {log: arg => console.log("log:", arg),}};
 
-WebAssembly.instantiateStreaming(fetch('debug.wasm'), importObject)
+WebAssembly.instantiateStreaming(fetch('ime-engine.wasm'), importObject)
     .then(result => {
         console.log(result.instance);
         var exports = result.instance.exports;
