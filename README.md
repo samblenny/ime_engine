@@ -1,38 +1,54 @@
 # IME-Engine
 
-IME-Engine is a toolkit for developers who want to embed a lightweight,
-customizable IME into other software, such as a language learning web app.
+IME-Engine provides an IME back-end (rust) and a vocabulary data entry
+workflow (ruby) for developers who want to embed a lightweight, customizable
+IME into other software.
 
 **PLEASE NOTE: This is just a hobby project. I hope to implement the vision I
-describe below in the not-too-distant future, but... no promises. For now, please
-consider this vaporware. I'll remove this note if I make sufficient progress.**
+describe below in the not-too-distant future, but... no promises. For now,
+please consider this vaporware. I will remove this note if I make sufficient
+progress.**
 
 
 ## Non-Features
 
-1. This is not a full IME. Among other things, you'll need to provide your own
-   UI.
+1. This is not a full IME. Among other things, you will need to provide your
+   own UI.
 
-2. This is not a rust crate of the sort where you can just import it and use
-   all the functionality through API calls. The workflow for customizing vocab
-   lists includes source code generation. I'm talking about stuff like
-   pre-computing hash tables and bloom filters that get packed into array
-   literals.
+2. This does not include AI stuff or a very large, general-purpose vocabulary.
+   There is no auto-correct or fuzzy predictive completion. Rather, ime-engine
+   uses simple search algorithms combined with a workflow for customizing a
+   domain-specific vocabulary.
+
+3. This is not a rust crate of the sort where you just add the dependency and
+   start making API calls. The workflow for customizing vocab lists is based on
+   ruby scripts that pre-compute data structures and generate rust source code.
+
+4. This does not rely on external dependencies beyond vanilla cargo/rustc and a
+   ruby interpreter. For the WASM demo, the dev workflow uses rustup and cargo
+   with the rustc wasm32-unknown-unknown build target. You will not need
+   wasm-pack. The ruby scripts should work on macos or linux systems with ruby
+   v2.3 or newer (not tested on windows, so YMMV). No extra gems required.
 
 
 ## What problems does IME-Engine hope to solve?
 
-1. **Embeddable IME back-end for web apps:** Provide a small, simple, fast IME
-   back-end that can be packaged as a WASM module for use in an SRS vocabulary
-   web app with fill-in-the-blank questions.
+1. **Embeddable, offline, no_std IME back-end:** Provide a small, fast, IME
+   back-end suitable for including in language learning apps or other focused,
+   special-purpose software. By not depending on the rust standard library, and
+   by not depending on a network communication, ime-engine can be compiled for
+   platforms like WASM.
+
+   Main intended use case: Provide IME back-end for SRS vocab practice web app
+   designed for offline use (PWA) on phone or tablet.
 
 2. **Match IME spelling to textbook spelling:** Provide a way to avoid spelling
    confusion between IME and textbook. For vocabulary practice software,
    students can get stuck if the IME does not respond appropriately to
    correctly typed romanized spellings from the textbook.
 
-3. **Vocab list data entry workflow:** Provide methods and tools to assist with
-   accurately typing in vocab lists and comparing them to official word lists.
+3. **Custom vocabulary data entry workflow:** Provide methods and tools to
+   assist with accurately typing and quality checking vocab lists.
 
 
 ## Roadmap
@@ -55,9 +71,18 @@ test administered by Hanban (Confucius Institute). Hanban's HSK textbooks
 include vocabulary tables of pinyin spellings for all the 汉字 on the HSK
 vocabulary lists.
 
+**PWA:** Progressive Web Application (PWA) refers to a method for using open
+web standards to provide functionality similar to a phone app. Installing a PWA
+is similar to making a bookmark---you do not need to go through an app store.
+
 **Romanization:** Text from a writing system that does not use the Latin
 alphabet can be *romanized* by following some system of rules for transliterating
 that writing into words spelled with the Latin alphabet.
 
 **SRS:** Spaced Repetition (SRS) is a system developed by Dr. Piotr Wozniak for
 efficiently learning and remembering large vocabulary lists.
+
+**WASM:** WebAssembly (WASM) is an open web technology for using compiled
+programs in situations that previously would require using Javascript. Compared
+to Javascript, WASM programs run faster, provide additional safety guarantees,
+and can be written in languages such as Rust.
