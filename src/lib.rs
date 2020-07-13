@@ -1,44 +1,78 @@
 #![no_std]
 
-// Include the static arrays generated from vocab list files
-mod autogen_hsk;
-
-// Boilerplate to avoid need for wasm-bindgen and wasm-pack
+// Boilerplate to use no_std without wasm-bindgen and wasm-pack
 use core::panic::PanicInfo;
 #[panic_handler]
 fn panic(_pi: &PanicInfo) -> ! {
     loop {}
 }
 
-// Shared message buffer for communicating with javascript
-const JS_INBOX_SIZE: usize = 73;
-pub static mut JS_INBOX: [u8; JS_INBOX_SIZE] = [0; JS_INBOX_SIZE];
+// Include the static arrays generated from vocab list files
+mod autogen_hsk;
 
-// Copy message into js inbox buffer; return message size in bytes.
-// Using no_mangle makes disassembly prettier on the browser side.
+// Shared mailbox buffers for copying messages in & out of the VM
+pub const MAILBOX_SIZE: usize = 73;
+pub static mut WASM_INBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
+pub static mut WASM_OUTBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
+
+// Copy message into outbox buffer; return message size in bytes.
+// no_mangle makes disassembly more readable in browser dev tools.
 #[no_mangle]
-fn copy_message(message: &str) -> usize {
+fn copy_to_outbox(message: &str, bytes_to_skip: usize) -> usize {
+    let mut copied_bytes = 0;
     unsafe {
         for (i, b) in message.bytes().enumerate() {
-            JS_INBOX[i] = b;
+            // TODO: better strategy for overflow (vs. silently drop extra)
+            if bytes_to_skip + i < MAILBOX_SIZE {
+                WASM_OUTBOX[bytes_to_skip + i] = b;
+                copied_bytes += 1;
+            } else {
+                break;
+            }
         }
     }
-    message.len()
+    copied_bytes
 }
 
-// Return pointer to shared message buffer (the js inbox).
+// Export location & size of utf8 mailbox buffers in VM shared memory
+// no_mangle is necessary here to get predictable names for linking
 #[no_mangle]
-pub unsafe extern "C" fn js_inbox_ptr() -> *const u8 {
-    JS_INBOX.as_ptr()
+pub unsafe extern "C" fn wasm_inbox_ptr() -> *const u8 {
+    WASM_INBOX.as_ptr()
+}
+#[no_mangle]
+pub unsafe extern "C" fn wasm_outbox_ptr() -> *const u8 {
+    WASM_OUTBOX.as_ptr()
+}
+#[no_mangle]
+pub unsafe extern "C" fn wasm_mailbox_size() -> usize {
+    MAILBOX_SIZE
 }
 
-// Receive 1 keystroke; update state machine & js inbox; return message size (bytes).
-// Side-effect: copy utf8 string representing current state into js inbox buffer
+// Receive message; update state machine & outbox; return outbound message size (bytes).
+// Side-effect: copy utf8 string representing current state into outbox buffer
 #[no_mangle]
-pub extern "C" fn keystroke_event(n: i32) -> usize {
-    if n >= 0 && n < autogen_hsk::HANZI.len() as i32 {
-        copy_message(autogen_hsk::HANZI[n as usize])
-    } else {
-        copy_message(autogen_hsk::PINYIN[5])
+pub extern "C" fn exchange_messages(n: usize) -> usize {
+    let inbox_msg: &str;
+    unsafe {
+        inbox_msg = match core::str::from_utf8(&WASM_INBOX[0..n]) {
+            Ok(s) => &s,
+            Err(_) => &"", // TODO: handle mal-formed utf8 strings better
+        };
     }
+    let mut outbox_bytes = 0;
+    let mut match_count = 0;
+    // TODO: use something better than a brute force linear search
+    for (i, s) in autogen_hsk::PINYIN.iter().enumerate() {
+        if s == &inbox_msg {
+            match_count += 1;
+            let corresponding_hanzi = &autogen_hsk::HANZI[i];
+            if match_count > 1 {
+                // This works like .join(", ")
+                outbox_bytes += copy_to_outbox(&", ", outbox_bytes);
+            }
+            outbox_bytes += copy_to_outbox(corresponding_hanzi, outbox_bytes);
+        }
+    }
+    outbox_bytes
 }

@@ -3,15 +3,28 @@
 WebAssembly.instantiateStreaming(fetch('ime-engine.wasm'))
     .then(result => {
         let exports = result.instance.exports;
-        let buffer = new Uint8Array(exports.memory.buffer);
-        let inbox = exports.js_inbox_ptr();
+        let wasmShared = new Uint8Array(exports.memory.buffer);
+        let wasmInbox = exports.wasm_inbox_ptr();
+        let wasmOutbox = exports.wasm_outbox_ptr();
+        let mailboxMaxSize = exports.wasm_mailbox_size();
         let utf8dec = new TextDecoder();
+        let utf8enc = new TextEncoder();
         let x = document.querySelector("#x");
+        function send(str) {
+            let utf8Message = utf8enc.encode(str);
+            let inboxMsgSize = 0;
+            for (let i=0; i<utf8Message.length && i<mailboxMaxSize; i++) {
+                wasmShared[wasmInbox+i] = utf8Message[i];
+                inboxMsgSize += 1;
+            }
+            let outboxMsgSize = exports.exchange_messages(inboxMsgSize);
+            return utf8dec.decode(wasmShared.subarray(wasmOutbox, wasmOutbox + outboxMsgSize));
+        }
         let lines = [];
-        for (let n=0; n<151; n++) {
-            let size = exports.keystroke_event(n);
-            let message = utf8dec.decode(buffer.subarray(inbox, inbox + size));
-            lines.push(message);
+        let txMessages = ["ai", "ba", "baba", "dian", "dianshi", "hao", "he", "mianbao"];
+        for (const txMsg of txMessages) {
+            let rxMsg = send(txMsg);
+            lines.push(txMsg + " => " + rxMsg);
         }
         x.textContent = lines.join("\n");
     });
