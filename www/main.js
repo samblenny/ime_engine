@@ -21,7 +21,7 @@ WebAssembly.instantiateStreaming(fetch('ime-engine.wasm'))
             return utf8dec.decode(wasmShared.subarray(wasmOutbox, wasmOutbox + outboxMsgSize));
         }
         let lines = [];
-        let txMessages = ["ai", "ba", "baba", "dian", "dianshi", "hao", "he", "mianbao"];
+        let txMessages = ["he", "hao", "na", "shi", "dianshi", "hao", "he", "mianbao"];
         for (const txMsg of txMessages) {
             let rxMsg = send(txMsg);
             lines.push(txMsg + " => " + rxMsg);

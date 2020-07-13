@@ -74,5 +74,10 @@ pub extern "C" fn exchange_messages(n: usize) -> usize {
             outbox_bytes += copy_to_outbox(corresponding_hanzi, outbox_bytes);
         }
     }
+    outbox_bytes += copy_to_outbox(&"---", outbox_bytes);
+    match autogen_hsk::PINYIN.binary_search(&inbox_msg) {
+        Ok(i) => outbox_bytes += copy_to_outbox(&autogen_hsk::HANZI[i], outbox_bytes),
+        Err(_) => (),
+    }
     outbox_bytes
 }
