@@ -10,12 +10,12 @@ please consider this vaporware. I will remove this note if I make sufficient
 progress.**
 
 
-## WASM Demo
+## Live Demo
 
 To view the WASM demo for my current progress:
 
-- hosted page: <https://samblenny.github.io/ime-engine/www/>
-- code: [www/](www/) directory in this repo
+- hosted page: <https://samblenny.github.io/ime-engine/wasm-demo/>
+- code: [wasm-demo/](wasm-demo/) in this repo
 
 
 ## Non-Features
