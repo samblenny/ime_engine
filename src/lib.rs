@@ -61,23 +61,9 @@ pub extern "C" fn exchange_messages(n: usize) -> usize {
         };
     }
     let mut outbox_bytes = 0;
-    let mut match_count = 0;
-    // TODO: use something better than a brute force linear search
-    for (i, s) in autogen_hsk::PINYIN.iter().enumerate() {
-        if s == &inbox_msg {
-            match_count += 1;
-            let corresponding_hanzi = &autogen_hsk::HANZI[i];
-            if match_count > 1 {
-                // This works like .join(", ")
-                outbox_bytes += copy_to_outbox(&", ", outbox_bytes);
-            }
-            outbox_bytes += copy_to_outbox(corresponding_hanzi, outbox_bytes);
-        }
-    }
-    outbox_bytes += copy_to_outbox(&"---", outbox_bytes);
     match autogen_hsk::PINYIN.binary_search(&inbox_msg) {
         Ok(i) => outbox_bytes += copy_to_outbox(&autogen_hsk::HANZI[i], outbox_bytes),
-        Err(_) => (),
+        Err(_) => outbox_bytes += copy_to_outbox(&"[sp?]", outbox_bytes),
     }
     outbox_bytes
 }

@@ -21,10 +21,10 @@ WebAssembly.instantiateStreaming(fetch('ime-engine.wasm'))
             return utf8dec.decode(wasmShared.subarray(wasmOutbox, wasmOutbox + outboxMsgSize));
         }
         let lines = [];
-        let txMessages = ["he", "hao", "na", "shi", "dianshi", "hao", "he", "mianbao"];
+        let txMessages = ["he", "hao", "na", "shi", "dianshi", "jintian", "shui", "mianbao"];
         for (const txMsg of txMessages) {
             let rxMsg = send(txMsg);
-            lines.push(txMsg + " => " + rxMsg);
+            lines.push(txMsg + "\t" + rxMsg);
         }
         x.textContent = lines.join("\n");
     });
