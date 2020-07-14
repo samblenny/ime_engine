@@ -12,10 +12,10 @@ progress.**
 
 ## Live Demo
 
-To view the WASM demo for my current progress:
+To view the WASM demo with current progress:
 
 - hosted page: <https://samblenny.github.io/ime-engine/wasm-demo/>
-- code: [wasm-demo/](wasm-demo/) in this repo
+- code: [wasm-demo/](wasm-demo/)
 
 
 ## Non-Features
@@ -27,11 +27,11 @@ To view the WASM demo for my current progress:
 
 3. This is not a rust crate of the sort where you just add the dependency and
    start making API calls. The workflow for customizing vocab lists uses ruby
-   scripts to pre-compute arrays and generate rust source code. Ruby v2.3 or
-   later should work on macOS and linux (windows not tested). No gems needed.
+   scripts to generate rust source code. Ruby v2.3 or later should work on
+   macOS and linux (windows not tested). No gems needed.
 
-4. This does not use wasm-pack. I build the WASM module with cargo, rustc's
-   wasm32-unknown-unknown build target, and hand-coded javascript bindings.
+4. This does not use wasm-pack. I build the WASM module using cargo, rustc with
+   wasm32-unknown-unknown, and hand-coded javascript bindings.
 
 
 ## What problems does IME-Engine hope to solve?
