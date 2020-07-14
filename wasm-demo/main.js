@@ -46,7 +46,8 @@ function wasmDemo(result) {
     let pinyinSearchKeys = ["he", "hao", "na", "shi", "dianshi", "jintian", "shui", "mianbao"];
     for (const messageToWASM of pinyinSearchKeys) {
         let replyToJS = send(messageToWASM);
-        lines.push("[js->wasm]: \"" + messageToWASM + "\"\t[wasm->js]: \"" + replyToJS + "\"");
+        lines.push("<js_pinyin?> " + messageToWASM);
+        lines.push("<wasm_hanzi> " + replyToJS);
     }
     preStdout.textContent = lines.join("\n");
 }
