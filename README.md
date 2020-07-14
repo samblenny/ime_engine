@@ -10,25 +10,28 @@ please consider this vaporware. I will remove this note if I make sufficient
 progress.**
 
 
+## WASM Demo
+
+To view the WASM demo for my current progress:
+
+- hosted page: <https://samblenny.github.io/ime-engine/www/>
+- code: [www/](www/) directory in this repo
+
+
 ## Non-Features
 
-1. This is not a full IME. Among other things, you will need to provide your
-   own UI.
+1. This is not a full IME.
 
 2. This does not include AI stuff or a very large, general-purpose vocabulary.
-   There is no auto-correct or fuzzy predictive completion. Rather, ime-engine
-   uses simple search algorithms combined with a workflow for customizing a
-   domain-specific vocabulary.
+   There is no auto-correct or fuzzy predictive completion.
 
 3. This is not a rust crate of the sort where you just add the dependency and
-   start making API calls. The workflow for customizing vocab lists is based on
-   ruby scripts that pre-compute data structures and generate rust source code.
+   start making API calls. The workflow for customizing vocab lists uses ruby
+   scripts to pre-compute arrays and generate rust source code. Ruby v2.3 or
+   later should work on macOS and linux (windows not tested). No gems needed.
 
-4. This does not rely on external dependencies beyond vanilla cargo/rustc and a
-   ruby interpreter. For the WASM demo, the dev workflow uses rustup and cargo
-   with the rustc wasm32-unknown-unknown build target. You will not need
-   wasm-pack. The ruby scripts should work on macos or linux systems with ruby
-   v2.3 or newer (not tested on windows, so YMMV). No extra gems required.
+4. This does not use wasm-pack. I build the WASM module with cargo, rustc's
+   wasm32-unknown-unknown build target, and hand-coded javascript bindings.
 
 
 ## What problems does IME-Engine hope to solve?
@@ -83,6 +86,6 @@ that writing into words spelled with the Latin alphabet.
 efficiently learning and remembering large vocabulary lists.
 
 **WASM:** WebAssembly (WASM) is an open web technology for using compiled
-programs in situations that previously would require using Javascript. Compared
-to Javascript, WASM programs run faster, provide additional safety guarantees,
-and can be written in languages such as Rust.
+programs in situations that previously would require using javascript. Compared
+to javascript, WASM programs run faster, provide additional safety guarantees,
+and can be written in languages such as rust.
