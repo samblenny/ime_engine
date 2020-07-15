@@ -5,7 +5,7 @@ require 'set'
 
 RUST_FILE = "../src/autogen_hsk.rs"
 HSK1 = {src: "hsk1.tsv", qc: "hsk1-QC-do-not-edit.tsv"}
-HSK2 = {src: "hsk2.tsv", qc: "hsk2-QC-do-not-edit-tsv"}
+HSK2 = {src: "hsk2.tsv", qc: "hsk2-QC-do-not-edit.tsv"}
 
 # Returns array: [[hanzi, pinyin], [hanzi, pinyin], ...]
 def read_tsv(file)
