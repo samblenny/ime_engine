@@ -7,7 +7,7 @@ function wasmDemo() {
 
     // Send search keys to the WASM module and log the response text in pre#stdout
     let lines = [];
-    let pinyinSearchKeys = ["he", "hao", "na", "ta", "dianshi", "jintian", "shui", "mianbao"];
+    let pinyinSearchKeys = ["he", "hao", "na", "ta", "chu", "dianshi", "jintian", "shui", "mianbao"];
     for (const messageToWASM of pinyinSearchKeys) {
         let replyToJS = syncMessages(messageToWASM);
         lines.push("  <js> " + messageToWASM);
