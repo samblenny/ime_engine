@@ -72,6 +72,9 @@ for level in [HSK1, HSK2]
   end
 end
 
+# Sort the merged vocab lists in pinyin order
+merged_pinyin, merged_hanzi = merged_pinyin.zip(merged_hanzi).sort.transpose
+
 # Generate rust source code with hanzi and pinyin arrays
 File.open(RUST_FILE, "w") { |rf|
   TEMPLATE = <<~RUST
