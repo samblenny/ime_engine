@@ -20,7 +20,7 @@ def get_official_words(key)
       words << line.chomp if !skip
     end
   end
-  return words
+  return Set.new(words)
 end
 
 def get_tsv_words(filename)
@@ -33,26 +33,30 @@ def get_tsv_words(filename)
 end
 
 puts "Checking archive of offical word lists..."
-counts = {hsk1: 150, hsk2: 300, hsk3: 600, hsk4: 1200, hsk5: 2500, hsk6: 5000}
-for key in counts.keys.sort
-  words = get_official_words(key.to_s)
-  puts " #{key}: #{words.size} #{if words.size == counts[key] then "ok" else "err" end}"
+levels = [:hsk1, :hsk2]
+words = levels.map {|k| [k, get_official_words(k.to_s)]}.to_h
+new_words = {hsk1: words[:hsk1],
+             hsk2: words[:hsk2] - words[:hsk1],}
+for k in levels
+  puts " #{k}: #{words[k].size} words (#{new_words[k].size} new)"
 end
 
-puts "Comparing TSV data entry with offical word lists..."
-checks = { hsk1: "hsk1.tsv" }
-for archive_key, tsv_filename in checks.each_pair
+# Use set algebra to find differences between TSV data and official word list
+def compare_tsv_to_official(tsv_filename, official_words)
   tsv_lines = get_tsv_words(tsv_filename)
   tsv_words = Set.new(tsv_lines)
-  archive_words = Set.new(get_official_words(archive_key.to_s))
-  puts " #{tsv_filename}:"
+  puts "\n #{tsv_filename}:"
   puts "  #{tsv_lines.size} lines, #{tsv_words.size} unique words"
-  if archive_words == tsv_words
-    puts "  TSV word list matches archive list"
+  if official_words == tsv_words
+    puts "  TSV word list matches official new words for this level's official list"
   else
-    missing = archive_words - tsv_words
-    extra = tsv_words - archive_words
+    missing = official_words - tsv_words
+    extra = tsv_words - official_words
     puts "  Missing words (not in TSV file):\n   #{missing.to_a.join("\n   ")}" if !missing.empty?
     puts "  Extra words (not in official list):\n   #{extra.to_a.join("\n   ")}" if !extra.empty?
   end
 end
+
+puts "Comparing TSV data entry with offical word lists..."
+compare_tsv_to_official("hsk1.tsv", new_words[:hsk1])
+compare_tsv_to_official("hsk2.tsv", new_words[:hsk2])
