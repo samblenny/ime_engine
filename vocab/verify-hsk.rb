@@ -32,11 +32,18 @@ def get_tsv_words(filename)
   return words
 end
 
+# Verify contents of the official words archive file using set algebra
+# to calculate how many new words occur in each level
 puts "Checking archive of offical word lists..."
-levels = [:hsk1, :hsk2]
+levels = [:hsk1, :hsk2, :hsk3, :hsk4, :hsk5, :hsk6]
 words = levels.map {|k| [k, get_official_words(k.to_s)]}.to_h
 new_words = {hsk1: words[:hsk1],
-             hsk2: words[:hsk2] - words[:hsk1],}
+             hsk2: words[:hsk2] - words[:hsk1],
+             hsk3: words[:hsk3] - words[:hsk2],
+             hsk4: words[:hsk4] - words[:hsk3],
+             hsk5: words[:hsk5] - words[:hsk4],
+             hsk6: words[:hsk6] - words[:hsk5],
+            }
 for k in levels
   puts " #{k}: #{words[k].size} words (#{new_words[k].size} new)"
 end
@@ -57,6 +64,6 @@ def compare_tsv_to_official(tsv_filename, official_words)
   end
 end
 
-puts "Comparing TSV data entry with offical word lists..."
+puts "\nComparing TSV data entry with offical word lists..."
 compare_tsv_to_official("hsk1.tsv", new_words[:hsk1])
 compare_tsv_to_official("hsk2.tsv", new_words[:hsk2])
