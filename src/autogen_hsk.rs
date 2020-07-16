@@ -17,8 +17,10 @@
 //  jiu
 //  kuai
 //  li
+//  mai
 //  qian
 //  qing
+//  wan
 //  xiao
 //  yao
 //  zai
@@ -131,6 +133,7 @@ pub const HANZI: &[&'static str] = &[
     &"来",
     &"老师",
     &"了",
+    &"累",
     &"冷",
     &"里	离",
     &"两",
@@ -139,7 +142,7 @@ pub const HANZI: &[&'static str] = &[
     &"路",
     &"旅游",
     &"吗",
-    &"买",
+    &"买	卖",
     &"妈妈",
     &"慢",
     &"忙",
@@ -160,6 +163,7 @@ pub const HANZI: &[&'static str] = &[
     &"能",
     &"你",
     &"年",
+    &"您",
     &"牛奶",
     &"女",
     &"女儿",
@@ -221,7 +225,7 @@ pub const HANZI: &[&'static str] = &[
     &"踢足球",
     &"同学",
     &"外",
-    &"完",
+    &"完	玩",
     &"往",
     &"玩儿",
     &"晚上",
@@ -410,6 +414,7 @@ pub const PINYIN: &[&'static str] = &[
     &"lai",
     &"laoshi",
     &"le",
+    &"lei",
     &"leng",
     &"li",
     &"liang",
@@ -439,6 +444,7 @@ pub const PINYIN: &[&'static str] = &[
     &"neng",
     &"ni",
     &"nian",
+    &"nin",
     &"niunai",
     &"nv",
     &"nver",
