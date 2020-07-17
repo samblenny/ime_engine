@@ -24,14 +24,16 @@ function logMessages(jsToWasm, wasmToJs) {
 function enableChatMode() {
     // Update the suggestion box for edit event
     compose.addEventListener('input', (e) => {
-        const jsToWasm = compose.value;
+        // TODO: better fix (vs toLowerCase) for when iOS auto-capitalizes input text
+        const jsToWasm = compose.value.toLowerCase();
         suggest.textContent = (jsToWasm != "") ? syncMessages(jsToWasm) : "";
     });
     // Update chat log for Enter/Return (send)
     compose.addEventListener('keydown', (e) => {
         if (!e.repeat && e.key == "Enter" && compose.value != "") {
             suggest.textContent = "";
-            const jsToWasm = compose.value;
+            // TODO: better fix (vs toLowerCase) for when iOS auto-capitalizes input text
+            const jsToWasm = compose.value.toLowerCase();
             const wasmToJs = syncMessages(jsToWasm);
             compose.value = "";
             logMessages(jsToWasm, wasmToJs);
