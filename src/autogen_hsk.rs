@@ -2,31 +2,38 @@
 // To make changes, see ../vocab/autogen-hsk.rb
 
 // The hanzi values for these duplicate pinyin search keys were merged:
-//  hao
-//  he
-//  hui
-//  na
-//  shi
-//  ta
-//  xie
-//  zuo
 //  ba
 //  bai
 //  de
+//  guo
+//  hao
+//  he
+//  hui
 //  jin
 //  jiu
 //  kuai
 //  li
 //  mai
+//  mei
+//  na
+//  nar
 //  qian
 //  qing
+//  shi
+//  ta
 //  wan
+//  wang
 //  xiao
+//  xie
+//  xue
 //  yao
+//  yu
 //  zai
 //  zhe
+//  zuo
 
 pub const HANZI: &[&'static str] = &[
+    &"啊",
     &"爱",
     &"八	吧",
     &"爸爸",
@@ -41,11 +48,14 @@ pub const HANZI: &[&'static str] = &[
     &"宾馆",
     &"不",
     &"不客气",
+    &"不少",
     &"菜",
     &"茶",
     &"长",
     &"唱歌",
+    &"车",
     &"吃",
+    &"吃饭",
     &"出",
     &"穿",
     &"出租车",
@@ -58,6 +68,8 @@ pub const HANZI: &[&'static str] = &[
     &"打篮球",
     &"但是",
     &"到",
+    &"大卫",
+    &"大学",
     &"的	得",
     &"等",
     &"点",
@@ -77,9 +89,11 @@ pub const HANZI: &[&'static str] = &[
     &"二",
     &"儿子",
     &"饭店",
+    &"方",
     &"房间",
     &"非常",
     &"飞机",
+    &"分",
     &"分钟",
     &"服务员",
     &"高",
@@ -93,18 +107,21 @@ pub const HANZI: &[&'static str] = &[
     &"工作",
     &"狗",
     &"贵",
-    &"过",
+    &"国	过",
     &"还",
     &"孩子",
     &"汉语",
+    &"汉字",
     &"好	号",
     &"好吃",
     &"喝	和",
     &"黑",
     &"很",
     &"红",
+    &"后",
     &"后面",
     &"回	会",
+    &"回来",
     &"火车站",
     &"几",
     &"家",
@@ -116,6 +133,7 @@ pub const HANZI: &[&'static str] = &[
     &"姐姐",
     &"介绍",
     &"进	近",
+    &"今年",
     &"今天",
     &"九	就",
     &"觉得",
@@ -128,6 +146,7 @@ pub const HANZI: &[&'static str] = &[
     &"课",
     &"可能",
     &"可以",
+    &"口",
     &"块	快",
     &"快乐",
     &"来",
@@ -135,7 +154,7 @@ pub const HANZI: &[&'static str] = &[
     &"了",
     &"累",
     &"冷",
-    &"里	离",
+    &"里	李	离",
     &"两",
     &"零",
     &"六",
@@ -147,8 +166,9 @@ pub const HANZI: &[&'static str] = &[
     &"慢",
     &"忙",
     &"猫",
-    &"每",
+    &"没	每",
     &"没关系",
+    &"美国",
     &"妹妹",
     &"没有",
     &"门",
@@ -158,24 +178,26 @@ pub const HANZI: &[&'static str] = &[
     &"名字",
     &"哪	那",
     &"男",
-    &"哪儿",
+    &"哪儿	那儿",
     &"呢",
     &"能",
     &"你",
     &"年",
+    &"你们",
     &"您",
     &"牛奶",
     &"女",
     &"女儿",
     &"旁边",
     &"跑步",
+    &"朋",
     &"朋友",
     &"便宜",
     &"票",
     &"漂亮",
     &"苹果",
     &"七",
-    &"钱	千",
+    &"钱	前	千",
     &"铅笔",
     &"前面",
     &"起床",
@@ -226,7 +248,7 @@ pub const HANZI: &[&'static str] = &[
     &"同学",
     &"外",
     &"完	玩",
-    &"往",
+    &"王	往",
     &"玩儿",
     &"晚上",
     &"喂",
@@ -238,6 +260,7 @@ pub const HANZI: &[&'static str] = &[
     &"五",
     &"洗",
     &"下",
+    &"下面",
     &"想",
     &"先生",
     &"现在",
@@ -246,7 +269,7 @@ pub const HANZI: &[&'static str] = &[
     &"小时",
     &"下午",
     &"下雨",
-    &"些	写",
+    &"些	写	谢",
     &"谢谢",
     &"西瓜",
     &"喜欢",
@@ -255,7 +278,7 @@ pub const HANZI: &[&'static str] = &[
     &"星期",
     &"休息",
     &"希望",
-    &"雪",
+    &"学	雪",
     &"学生",
     &"学习",
     &"学校",
@@ -279,7 +302,7 @@ pub const HANZI: &[&'static str] = &[
     &"有",
     &"右边",
     &"游泳",
-    &"鱼",
+    &"雨	鱼",
     &"远",
     &"月",
     &"运动",
@@ -288,11 +311,14 @@ pub const HANZI: &[&'static str] = &[
     &"早上",
     &"怎么",
     &"怎么样",
+    &"张",
     &"丈夫",
     &"找",
     &"这	着",
     &"真",
     &"正在",
+    &"这儿",
+    &"这些",
     &"知道",
     &"中国",
     &"中午",
@@ -308,6 +334,7 @@ pub const HANZI: &[&'static str] = &[
 ];
 
 pub const PINYIN: &[&'static str] = &[
+    &"a",
     &"ai",
     &"ba",
     &"baba",
@@ -322,11 +349,14 @@ pub const PINYIN: &[&'static str] = &[
     &"binguan",
     &"bu",
     &"bukeqi",
+    &"bushao",
     &"cai",
     &"cha",
     &"chang",
     &"changge",
+    &"che",
     &"chi",
+    &"chifan",
     &"chu",
     &"chuan",
     &"chuzuche",
@@ -339,6 +369,8 @@ pub const PINYIN: &[&'static str] = &[
     &"dalanqiu",
     &"danshi",
     &"dao",
+    &"dawei",
+    &"daxue",
     &"de",
     &"deng",
     &"dian",
@@ -358,9 +390,11 @@ pub const PINYIN: &[&'static str] = &[
     &"er",
     &"erzi",
     &"fandian",
+    &"fang",
     &"fangjian",
     &"feichang",
     &"feiji",
+    &"fen",
     &"fenzhong",
     &"fuwuyuan",
     &"gao",
@@ -378,14 +412,17 @@ pub const PINYIN: &[&'static str] = &[
     &"hai",
     &"haizi",
     &"hanyu",
+    &"hanzi",
     &"hao",
     &"haochi",
     &"he",
     &"hei",
     &"hen",
     &"hong",
+    &"hou",
     &"houmian",
     &"hui",
+    &"huilai",
     &"huochezhan",
     &"ji",
     &"jia",
@@ -397,6 +434,7 @@ pub const PINYIN: &[&'static str] = &[
     &"jiejie",
     &"jieshao",
     &"jin",
+    &"jinnian",
     &"jintian",
     &"jiu",
     &"juede",
@@ -409,6 +447,7 @@ pub const PINYIN: &[&'static str] = &[
     &"ke",
     &"keneng",
     &"keyi",
+    &"kou",
     &"kuai",
     &"kuaile",
     &"lai",
@@ -430,6 +469,7 @@ pub const PINYIN: &[&'static str] = &[
     &"mao",
     &"mei",
     &"meiguanxi",
+    &"meiguo",
     &"meimei",
     &"meiyou",
     &"men",
@@ -444,12 +484,14 @@ pub const PINYIN: &[&'static str] = &[
     &"neng",
     &"ni",
     &"nian",
+    &"nimen",
     &"nin",
     &"niunai",
     &"nv",
     &"nver",
     &"pangbian",
     &"paobu",
+    &"peng",
     &"pengyou",
     &"pianyi",
     &"piao",
@@ -519,6 +561,7 @@ pub const PINYIN: &[&'static str] = &[
     &"wu",
     &"xi",
     &"xia",
+    &"xiamian",
     &"xiang",
     &"xiansheng",
     &"xianzai",
@@ -569,11 +612,14 @@ pub const PINYIN: &[&'static str] = &[
     &"zaoshang",
     &"zenme",
     &"zenmeyang",
+    &"zhang",
     &"zhangfu",
     &"zhao",
     &"zhe",
     &"zhen",
     &"zhengzai",
+    &"zher",
+    &"zhexie",
     &"zhidao",
     &"zhongguo",
     &"zhongwu",
