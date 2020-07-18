@@ -7,20 +7,20 @@ printed in a book?
 
 This is how the macOS Pinyin IME works.
 
-In the table, `<space>` means press the spacebar, `<return>` means press the
-"return" key, and `<option>-a` means press the "a" key while holding down the
-"option" key.
+In the table, `SPC` means press the spacebar, `RET` means press the "return"
+key, and `OPT-a` means press the "a" key while holding down the "option" key.
 
-| To type | for   | using IME mode | press these keys.   | Result |
-|---------|-------|----------------|---------------------|--------|
-| 汉字    | nǚ'ér | Pinyin         | `n v e r <space>`   | 女儿   |
-| ASCII   | nǚ'ér | Pinyin         | `n v e r <return>`  | nver   |
-| Pinyin  | lǜ    | ABC-Extended   | `l <option>-v v`    | lǚ     |
-| Pinyin  | ü     | ABC-Extended   | `<option>-u u`      | ü      |
-| Pinyin  | ā     | ABC-Extended   | `<option>-a a`      | ē      |
-| Pinyin  | á     | ABC-Extended   | `<option>-e a`      | á      |
-| Pinyin  | ǎ     | ABC-Extended   | `<option>-v a`      | ǎ      |
-| Pinyin  | à     | ABC-Extended   | ```<option>-` a```  | à      |
+| To type | for      | using IME mode | press these keys.           | Result   |
+|---------|----------|----------------|-----------------------------|----------|
+| 汉字    | nǚ'ér    | Pinyin         | `n v e r SPC`               | 女儿     |
+| ASCII   | nǚ'ér    | Pinyin         | `n v e r RET`               | nver     |
+| ASCII   | kàn jiàn | Pinyin         | `k a n RET SPC j i a n RET` | kan jian |
+| Pinyin  | lǜ       | ABC-Extended   | `l OPT-v v`                 | lǚ       |
+| Pinyin  | ü        | ABC-Extended   | `OPT-u u`                   | ü        |
+| Pinyin  | ā        | ABC-Extended   | `OPT-a a`                   | ē        |
+| Pinyin  | á        | ABC-Extended   | `OPT-e a`                   | á        |
+| Pinyin  | ǎ        | ABC-Extended   | `OPT-v a`                   | ǎ        |
+| Pinyin  | à        | ABC-Extended   | ```OPT-` a```               | à        |
 
 
 ## Text Editors
