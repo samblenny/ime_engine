@@ -9,6 +9,7 @@ WORD_FILES = [
   "hsk1-extra.tsv",
   "hsk2.tsv",
   "hsk2-extra.tsv",
+  "hsk3.tsv",
 ]
 
 # Returns array: [[hanzi, pinyin], [hanzi, pinyin], ...]
@@ -25,8 +26,8 @@ def char_set(file)
 end
 
 # Normalize pinyin to lowercase ASCII (remove diacritics/whitespace/punctuation).
-TR_FROM = " 'abcdefghijklmnopqrstuwxyzàáèéìíòóùúāēěīōūǎǐǒǔǚ"
-TR_TO   = " 'abcdefghijklmnopqrstuwxyzaaeeiioouuaeeiouaiouv"
+TR_FROM = " 'abcdefghijklmnopqrstuwxyzàáèéìíòóùúüāēěīōūǎǐǒǔǚ"
+TR_TO   = " 'abcdefghijklmnopqrstuwxyzaaeeiioouuvaeeiouaiouv"
 ELIDE   = " '"
 def normalize(pinyin)
   n = pinyin.downcase.delete(ELIDE).tr(TR_FROM, TR_TO)
