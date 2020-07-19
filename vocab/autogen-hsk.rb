@@ -61,12 +61,18 @@ for wf in WORD_FILES
         # If you see this warning, check for two files listing the exact same word
         warn "Likely duplicate word: #{wf}:  #{hanzi}:#{pinyin}  ==>  try:  grep #{hanzi} *.tsv"
       end
-      # Duplicate search key ==> Append hanzi to first entry
-      merged_hanzi[first_index_of[normalized_pinyin]] += "\t#{hanzi}"
-      duplicate_pinyin << normalized_pinyin
+      # Conditionally append hanzi for duplicate search key
+      # 1. Skip hanzi like 过 guò with same hanzi, same pinyin, but different part of speech
+      # 2. For the rest, append the new hanzi to the list of choices
+      if !merged_hanzi[first_index_of[normalized_pinyin]].include?(hanzi)
+        merged_hanzi[first_index_of[normalized_pinyin]] << hanzi
+        duplicate_pinyin << normalized_pinyin
+      else
+        warn "SKIPPING insert of duplicate (hanzi,pinyin) from #{wf}:  #{hanzi} #{normalized_pinyin}"
+      end
     else
       # First instance of search key ==> Add new entries
-      merged_hanzi[i] = hanzi
+      merged_hanzi[i] = [hanzi]
       merged_pinyin[i] = normalized_pinyin
       first_index_of[normalized_pinyin] = i
       i += 1
@@ -92,7 +98,7 @@ File.open(RUST_FILE, "w") { |rf|
     <% duplicate_pinyin.each do |dp| %>//  <%= dp %>
     <% end %>
     pub const HANZI: &[&'static str] = &[
-    <% merged_hanzi.each do |h| %>    &"<%= h %>",
+    <% merged_hanzi.each do |h| %>    &"<%= h.join("\t") %>",
     <% end %>];
 
     pub const PINYIN: &[&'static str] = &[
