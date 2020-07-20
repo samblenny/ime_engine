@@ -68,3 +68,4 @@ puts "\nComparing TSV data entry with offical word lists..."
 compare_tsv_to_official("hsk1.tsv", new_words[:hsk1])
 compare_tsv_to_official("hsk2.tsv", new_words[:hsk2])
 compare_tsv_to_official("hsk3.tsv", new_words[:hsk3])
+compare_tsv_to_official("hsk4.tsv", new_words[:hsk4])

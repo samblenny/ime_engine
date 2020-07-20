@@ -11,6 +11,7 @@ WORD_FILES = [
   "hsk2-extra.tsv",
   "hsk3.tsv",
   "hsk3-extra.tsv",
+  "hsk4.tsv",
 ]
 
 # Returns array: [[hanzi, pinyin], [hanzi, pinyin], ...]
