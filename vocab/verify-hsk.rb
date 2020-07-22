@@ -55,12 +55,12 @@ def compare_tsv_to_official(tsv_filename, official_words)
   puts "\n #{tsv_filename}:"
   puts "  #{tsv_lines.size} lines, #{tsv_words.size} unique words"
   if official_words == tsv_words
-    puts "  TSV word list matches official new words for this level's official list"
+    puts "  TSV word list matches new words for this level's official test list"
   else
     missing = official_words - tsv_words
     extra = tsv_words - official_words
     puts "  Missing words (not in TSV file):\n   #{missing.to_a.join("\n   ")}" if !missing.empty?
-    puts "  Extra words (not in official list):\n   #{extra.to_a.join("\n   ")}" if !extra.empty?
+    puts "  Extra words (not in official test list):\n   #{extra.to_a.join("\n   ")}" if !extra.empty?
   end
 end
 

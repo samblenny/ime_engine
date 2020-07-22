@@ -35,8 +35,8 @@
 当	dang
 当时	dangshi
 到处	daochu
-得	dei
-等	deng
+得	dei	mod.	must, have to
+等	deng	part.	etc., and so on
 低	di
 调查	diaocha
 掉	diao
@@ -128,8 +128,7 @@
 可是	keshi
 肯定	kending
 空气	kongqi
-空儿	kongr
-空	kong
+空儿	kongr	n.	free time, spare time
 困	kun
 困难	kunnan
 拉	la
@@ -239,6 +238,7 @@
 心情	xinqing
 辛苦	xinku
 信心	xinxin
+兴奋	xingfen
 幸福	xingfu
 性格	xingge
 修理	xiuli
@@ -298,4 +298,309 @@
 总结	zongjie
 最好	zuihao
 作家	zuojia
-
+安全	anquan
+棒	bang
+包子	baozi
+保护	baohu
+报名	bao ming
+抱	bao
+抱歉	baoqian
+笨	ben
+遍	bian
+表格	biaoge
+表示	biaoshi
+表演	biaoyan
+表扬	biaoyang
+并且	bingqie
+博士	boshi
+部分	bufen
+猜	cai
+参观	canguan
+餐厅	canting
+厕所	cesuo
+场	chang
+乘坐	chengzuo
+吃惊	chi jing
+出差	chu chai
+出发	chufa
+出生	chusheng
+厨房	chufang
+传真	chuanzhen
+词语	ciyu
+粗心	cuxin
+存	cun
+错误	cuowu
+打扮	daban
+打印	dayin
+打招呼	da zhaohu
+打针	da zhen
+大概	dagai
+大约	dayue
+戴	dai
+刀	dao
+导游	daoyou
+到底	daodi
+倒	dao
+道歉	dao qian
+得意	deyi
+登机牌	dengjipai
+底	di
+地点	didian
+地球	diqiu
+地址	dizhi
+丢	diu
+对话	duihua
+对面	duimian
+对于	duiyu
+儿童	ertong
+房东	fangdong
+放暑假	fang shujia
+否则	fouze
+父亲	fuqin
+付款	fu kuan
+复印	fuyin
+复杂	fuza
+干杯	gan bei
+赶	gan
+敢	gan
+干	gan
+高速公路	gaosu gonglu
+胳膊	gebo
+公里	gongli
+功夫	gongfu
+鼓励	guli
+故意	guyi
+挂	gua
+观众	guanzhong
+管理	guanli
+广播	guangbo
+规定	guiding
+国籍	guoji
+海洋	haiyang
+害羞	haixiu
+寒假	hanjia
+航班	hangban
+号码	haoma
+合格	hege
+合适	heshi
+盒子	hezi
+厚	hou
+互联网	hulianwang
+护士	hushi
+怀疑	huaiyi
+活泼	huopo
+火	huo
+基础	jichu
+激动	jidong
+记者	jizhe
+技术	jishu
+既然	jiran
+继续	jixu
+加油站	jiayouzhan
+假	jia
+减少	jianshao
+降落	jiangluo
+交通	jiaotong
+郊区	jiaoqu
+骄傲	jiao'ao
+饺子	jiaozi
+教育	jiaoyu
+接着	jiezhe
+节	jie
+节约	jieyue
+解释	jieshi
+进行	jinxing
+禁止	jinzhi
+京剧	jingju
+精彩	jingcai
+警察	jingcha
+竞争	jingzheng
+究竟	jiujing
+举	ju
+拒绝	jujue
+开心	kaixin
+看法	kanfa
+烤鸭	kaoya
+棵	ke
+可怜	kelian
+可惜	kexi
+客厅	keting
+空	kong
+恐怕	kongpa
+苦	ku
+矿泉水	kuangquanshui
+垃圾桶	lajitong
+辣	la
+来得及	laideji
+来自	laizi
+懒	lan
+老虎	laohu
+冷静	lengjing
+礼貌	limao
+理发	li fa
+力气	liqi
+厉害	lihai
+连	lian
+凉快	liangkuai
+零钱	lingqian
+流利	liuli
+旅行	lüxing
+马虎	mahu
+毛	mao
+毛巾	maojin
+美丽	meili
+梦	meng
+迷路	mi lu
+密码	mima
+秒	miao
+民族	minzu
+目的	mudi
+难受	nanshou
+内容	neirong
+弄	nong
+暖	nuan	adj.	warm
+暖和	nuanhuo	adj.	warm
+偶尔	ou'er
+排队	pai dui
+排列	pailie
+批评	piping
+骗	pian
+乒乓球	pingpangqiu
+破	po
+普遍	pubian
+普通话	putonghua
+千万	qianwan
+签证	qianzheng
+敲	qiao
+桥	qiao
+全部	quanbu
+然而	ran'er
+热闹	renao
+任务	renwu
+扔	reng
+仍然	rengran
+日记	riji
+入口	rukou
+森林	senlin
+商量	shangliang
+稍微	shaowei
+勺	shao	n.	spoon
+勺子	shaozi	n.	spoon
+社会	shehui
+申请	shenqing
+省	sheng	n.	province
+省	sheng	v.	to save, to economize
+剩	sheng
+失望	shiwang
+十分	shifen
+使用	shiyong
+世纪	shiji
+是否	shifou
+收	shou
+收拾	shoushi
+首都	shoudu
+受不了	shoubuliao
+输	shu
+数量	shuliang
+顺序	shunxu
+死	si
+速度	sudu
+塑料袋	suliaodai
+酸	suan
+随着	suizhe
+孙子	sunzi
+抬	tai
+弹钢琴	tan gangqin
+汤	tang
+趟	tang
+讨论	taolun
+填空	tian kong
+停	ting
+同情	tongqing
+同时	tongshi
+推	tui
+推迟	tuichi
+脱	tuo
+网站	wangzhan
+危险	weixian
+卫生间	weishengjian
+温度	wendu
+文章	wenzhang
+污染	wuran
+无	wu	v.	not to have, to be without
+无法	wufa	v.	cannot to, to be unable (to do something)
+无论	wulun
+误会	wuhui
+咸	xian
+相反	xiangfan
+相同	xiangtong
+香	xiang
+详细	xiangxi
+响	xiang
+小吃	xiaochi
+小伙子	xiaohuozi
+笑话	xiaohua
+信封	xinfeng
+信息	xinxi
+行	xing
+醒	xing
+性别	xingbie
+学期	xueqi
+牙膏	yagao
+呀	ya
+严格	yange
+盐	yan
+眼镜	yanjing
+演出	yanchu
+演员	yanyuan
+养成	yangcheng
+钥匙	yaoshi
+也许	yexu
+叶子	yezi
+页	ye
+以	yi
+意见	yijian
+引起	yinqi
+由	you
+邮局	youju
+友好	youhao
+有趣	youqu
+于是	yushi
+羽毛球	yumaoqiu
+语法	yufa
+语言	yuyan
+预习	yuxi
+原谅	yuanliang
+阅读	yuedu
+云	yun
+允许	yunxu
+杂志	zazhi
+脏	zang
+增加	zengjia
+占线	zhanxian
+照	zhao
+整理	zhengli
+正常	zhengchang
+之	zhi
+直接	zhijie
+只好	zhihao
+纸袋	zhidai	n.	paper bag
+重	zhong
+重点	zhongdian
+重视	zhongshi
+祝贺	zhuhe
+著名	zhuming
+转	zhuan
+准确	zhunque
+仔细	zixi
+自信	zixin
+租	zu
+尊重	zunzhong
+左右	zuoyou
+作用	zuoyong
+作者	zuozhe
+座	zuo
+座位	zuowei
+长城	Changcheng	p.n.	the Great Wall
+长江	Chang Jiang	p.n.	Yangtze River, the longest river in China
+亚洲	Yazhou	p.n.	Asia
