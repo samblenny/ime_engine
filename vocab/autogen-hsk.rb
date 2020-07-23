@@ -4,22 +4,40 @@ require 'erb'
 require 'set'
 
 RUST_FILE = "../src/autogen_hsk.rs"
-HSK1 = {src: "hsk1.tsv", qc: "hsk1-QC-do-not-edit.tsv"}
-HSK2 = {src: "hsk2.tsv", qc: "hsk2-QC-do-not-edit.tsv"}
+WORD_FILES = [
+  "hsk1.tsv",
+  "hsk1-extra.tsv",
+  "hsk2.tsv",
+  "hsk2-extra.tsv",
+  "hsk3.tsv",
+  "hsk3-extra.tsv",
+  "hsk4.tsv",
+  "hsk4-extra.tsv",
+]
 
-# Returns array: [[hanzi, pinyin], [hanzi, pinyin], ...]
+# Returns array: [[ciyu, pinyin], [ciyu, pinyin], ...] (see note 2)
+# Notes:
+# 1. The `select {..."#"..."\t"}` filters out blank lines and comments
+# 2. Most input lines are like "词语\tpinyin", which yields two element arrays
+#    like [ciyu, pinyin]. But, some tsv input lines include part of speech and
+#    meaning like, "过\tguo\tv.\tto spend, to pass", to help verify data entry
+#    for ciyu with multiple meanings for the same pronunciation. The longer
+#    lines yield 4 element arrays like [ciyu, pinyin, partofspeech, meaning].
 def read_tsv(file)
-  File.read(file).lines.map { |n| n.chomp.split("\t") }
+  File.read(file).lines
+    .select { |n| !n.start_with?("#") && n.include?("\t") }
+    .map { |n| n.chomp.split("\t") }
 end
 
 # Make a set with each unique character used in pinyin from <file>.
 def char_set(file)
+  # See comment below about ruby multiple assignment semantics
   Set.new(read_tsv(file).map { |_, pinyin| pinyin.downcase.chars }.flatten)
 end
 
 # Normalize pinyin to lowercase ASCII (remove diacritics/whitespace/punctuation).
-TR_FROM = " 'abcdefghijklmnopqrstuwxyzàáèéìíòóùúāēěīōūǎǐǒǔǚ"
-TR_TO   = " 'abcdefghijklmnopqrstuwxyzaaeeiioouuaeeiouaiouv"
+TR_FROM = " 'abcdefghijklmnopqrstuwxyzàáèéìíòóùúüāēěīōūǎǐǒǔǚ"
+TR_TO   = " 'abcdefghijklmnopqrstuwxyzaaeeiioouuvaeeiouaiouv"
 ELIDE   = " '"
 def normalize(pinyin)
   n = pinyin.downcase.delete(ELIDE).tr(TR_FROM, TR_TO)
@@ -27,65 +45,79 @@ def normalize(pinyin)
   return n
 end
 
-# Check integrity and coverage of the character transposition table
-detected = (char_set(HSK1[:src]) + char_set(HSK2[:src])).to_a.sort.join("")
+# Check integrity and coverage of the character transposition table.
+# The map/reduce uses set algebra to build a sorted string of unique characters from all the files.
+detected = WORD_FILES.map {|wf| char_set(wf)}.reduce {|a,b| a+b}.to_a.sort.join("")
 if detected != TR_FROM
-  warn "Error: Characters used in pinyin of #{HSK1[:src]} or #{HSK2[:src]} do not match TR_FROM"
+  warn "Error: Characters used in word file pinyin do not match TR_FROM"
   warn " detected: \"#{detected}\""
   warn " TR_FROM:  \"#{TR_FROM}\""
   abort "You need to update TR_FROM and TR_TO so pinyin will properly normalized to ASCII"
 end
 abort "Error: Check for TR_FROM/TR_TO length mismatch" if TR_FROM.size != TR_TO.size
 
-# Generate a quality check TSV file for manually checking the normalized pinyin
-print "This will overwrite #{HSK1[:qc]}, #{HSK2[:qc]}, and #{RUST_FILE}\nProceed? [y/N]: "
-abort "no changes made" if !["y", "Y"].include? gets.chomp
-for h in [HSK1, HSK2]
-  File.open(h[:qc], "w") { |qc|
-    for hanzi, pinyin in read_tsv(h[:src])
-      qc.puts "#{hanzi}\t#{pinyin}\t#{normalize(pinyin)}"
-    end
-  }
-end
-
-# Merge hanzi values for duplicate pinyin search keys
+# Merge ciyu values for duplicate pinyin search keys
 # example: ["he", "he"] and ["喝", "和"] get turned into ["he"] and ["喝\t和"]
-merged_hanzi = []
+# Notes (subtle ruby semantics):
+# 1. read_tsv() can return arrays of >=2 elements like [ciyu, pinyin, ...]
+# 2. The `for ciyu, pinyin in read_tsv()` below uses ruby multiple assignment
+#    to assign just the first two elements of the arrays from read_tsv(). It
+#    works like a slice. Additional array elements for part of speech and
+#    meaning, if present, will be ignored. The extra fields help with using
+#    grep on the .tsv files to check for duplicate entries.
+merged_ciyu = []
 merged_pinyin = []
 first_index_of = {}
 duplicate_pinyin = []
 i = 0
-for level in [HSK1, HSK2]
-  for hanzi, pinyin in read_tsv(level[:src])
-    nrmlzd_pinyin = normalize(pinyin)
-    if first_index_of[nrmlzd_pinyin]
-      # Duplicate search key ==> Append hanzi to first entry
-      merged_hanzi[first_index_of[nrmlzd_pinyin]] += "\t#{hanzi}"
-      duplicate_pinyin << nrmlzd_pinyin
+for wf in WORD_FILES
+  for ciyu, pinyin in read_tsv(wf)
+    normalized_pinyin = normalize(pinyin)
+    if first_index_of[normalized_pinyin]
+      if merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
+        # If you see this warning, use grep to check for duplicate entries.
+        # Verify the part of speech. For some words like 过, 等, and 省, the
+        # official word list has separate entries for different meanings of the
+        # same word.
+        warn "Likely duplicate word: #{wf}:  #{ciyu}:#{pinyin}  ==>  try:  grep #{ciyu} *.tsv"
+      end
+      # Conditionally append hanzi for duplicate pinyin search key
+      # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
+      #    spelling, but different part of speech
+      # 2. For the rest, append the new hanzi to the list of choices
+      if !merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
+        merged_ciyu[first_index_of[normalized_pinyin]] << ciyu
+        duplicate_pinyin << normalized_pinyin
+      end
     else
       # First instance of search key ==> Add new entries
-      merged_hanzi[i] = hanzi
-      merged_pinyin[i] = nrmlzd_pinyin
-      first_index_of[nrmlzd_pinyin] = i
+      merged_ciyu[i] = [ciyu]
+      merged_pinyin[i] = normalized_pinyin
+      first_index_of[normalized_pinyin] = i
       i += 1
     end
   end
 end
 
 # Sort the merged vocab lists in pinyin order
-merged_pinyin, merged_hanzi = merged_pinyin.zip(merged_hanzi).sort.transpose
+merged_pinyin, merged_ciyu = merged_pinyin.zip(merged_ciyu).sort.transpose
+duplicate_pinyin = duplicate_pinyin.sort.uniq
 
-# Generate rust source code with hanzi and pinyin arrays
+puts "\nPreparing to generate rust source code..."
+print "This will overwrite #{RUST_FILE}\nDo you want to continue? [y/N] "
+abort "no changes made" if !["y", "Y"].include? gets.chomp
+
+# Generate rust source code with ciyu and pinyin arrays
 File.open(RUST_FILE, "w") { |rf|
   TEMPLATE = <<~RUST
     // This file is automatically generated. DO NOT MAKE EDITS HERE!
     // To make changes, see ../vocab/autogen-hsk.rb
 
-    // The hanzi values for these duplicate pinyin search keys were merged:
-    <% duplicate_pinyin.uniq.each do |dp| %>//  <%= dp %>
+    // The 词语 values for these duplicate pinyin search keys were merged:
+    <% duplicate_pinyin.each do |dp| %>//  <%= dp %>
     <% end %>
-    pub const HANZI: &[&'static str] = &[
-    <% merged_hanzi.each do |h| %>    &"<%= h %>",
+    pub const CIYU: &[&'static str] = &[
+    <% merged_ciyu.each do |h| %>    &"<%= h.join("\t") %>",
     <% end %>];
 
     pub const PINYIN: &[&'static str] = &[
