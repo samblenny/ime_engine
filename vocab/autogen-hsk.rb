@@ -12,6 +12,7 @@ WORD_FILES = [
   "hsk3.tsv",
   "hsk3-extra.tsv",
   "hsk4.tsv",
+  "hsk4-extra.tsv",
 ]
 
 # Returns array: [[ciyu, pinyin], [ciyu, pinyin], ...] (see note 2)
@@ -87,8 +88,6 @@ for wf in WORD_FILES
       if !merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
         merged_ciyu[first_index_of[normalized_pinyin]] << ciyu
         duplicate_pinyin << normalized_pinyin
-      else
-        warn "SKIPPING redundant insert (#{wf}):  #{ciyu} #{normalized_pinyin}"
       end
     else
       # First instance of search key ==> Add new entries
