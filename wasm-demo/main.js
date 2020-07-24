@@ -28,15 +28,18 @@ function chatLogSafeHTML(html) {
 }
 
 function showHelp() {
-    chatLogSafeHTML('<h2>Help</h2>' +
-                    '<p>Pinyin:</p>' +
-                    '<ol><li>Use lowercase letters a to z</li>' +
-                    '<li>Tone marks: type <strong>a</strong> for ā, á, ǎ, or à</li>' +
-                    '<li>Umlaut: type <strong>v</strong> for ü or ǚ</li>' +
-                    '<li>Pick from suggestions: number keys, tab, or space</li>' +
-                    '<li>Send: return key (RET) or enter.</li></ol>' +
-                    '<p>Example: woxiang he guozhi RET ➡ 我想喝果汁</p>' +
-                    '<p>Commands: /help /about</p>');
+    // To test VoiceOver on macOS, use Safari. Chrome glitches hard. VoiceOver on iOS works for bilingual.
+    // The "<span>/</span>help..." stuff causes VoiceOver to say "slash help" instead of just "help".
+    chatLogSafeHTML('<h2>Help</h2>\n' +
+                    '<p>Pinyin Tips:<br>\n' +
+                    '<ul><li> Use lowercase. </li>\n' +
+                    '<li> Omit tone marks. For á, type <strong>a</strong> </li>\n' +
+                    '<li> Umlaut is special. For ü, type <strong>v</strong> </li>\n' +
+                    '<li> Pick options with numbers, tab, or space. </li>\n' +
+                    '<li> Send with return or enter. </li> </ul>\n' +
+                    '<p> Example: <br>\n' +
+                    '&nbsp; "wo xiang he guozhi", plus return, makes "<span lang="zh-CN">我想喝果汁</span>" </p>\n' +
+                    '<p> Slash Commands: <span>/</span>help <span>/</span>about </p>');
 }
 
 function showAbout() {
@@ -94,8 +97,11 @@ function enableChatMode() {
 
 // Show a welcome message, then enable chat mode
 function wasmDemo() {
-    chatLogSafeHTML("<p>This terminal has a built in Simplified Chinese IME.<br>" +
-                    "You can type pinyin phrases, other text, or /commands.</p>");
+    // To test VoiceOver on macOS, use Safari. VoiceOver on iOS works for bilingual.
+    // The "<span>/</span>help..." stuff causes VoiceOver to say "slash help" instead of just "help".
+    chatLogSafeHTML("<p>This terminal has a built in Simplified Chinese IME. " +
+                    "You can type pinyin phrases, other text, or <span>/</span>commands. " +
+                    "Try <strong><span>/</span>help</strong> or <strong><span>/</span>about</strong>.</p>");
     enableChatMode();
 }
 
