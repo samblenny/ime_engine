@@ -39,7 +39,7 @@ function showHelp() {
                     '<li> Send with return or enter. </li> </ul>\n' +
                     '<p> Example: <br>\n' +
                     '&nbsp; "wo xiang he guozhi", plus return, makes "<span lang="zh-CN">我想喝果汁</span>" </p>\n' +
-                    '<p> Slash Commands: <span>/</span>help <span>/</span>about </p>');
+                    '<p> Slash Commands: <span>/</span>help <span>/</span>about <span>/</span>clear </p>');
 }
 
 function showAbout() {
@@ -58,17 +58,23 @@ function showAbout() {
                     `&nbsp; Wikipedia's <a href="${WKHref}">${WKLinkText}</a> article</p>`);
 }
 
+function clearLog() {
+    while (chatLog.firstChild) {
+        chatLog.firstChild.remove();
+    }
+}
+
 // Register event handlers to enable chat mode UI
 function enableChatMode() {
     // Update the suggestion box for edit event
     compose.addEventListener('input', (e) => {
         // TODO: better fix (vs toLowerCase) for when iOS auto-capitalizes input text
         const jsToWasm = compose.value.toLowerCase();
-        if (['/help', '/about'].includes(jsToWasm)) {
-            suggest.textContent = "now type return or enter";
+        if (['/help', '/about', '/clear'].includes(jsToWasm)) {
+            suggest.textContent = "[waiting for return or enter]";
         } else {
             const wasmToJs = syncMessages(jsToWasm);
-            suggest.textContent = (wasmToJs && (wasmToJs !== "...")) ? wasmToJs : "";
+            suggest.textContent = wasmToJs;
         }
     });
     // Update chat log for Enter/Return (send)
@@ -84,7 +90,9 @@ function enableChatMode() {
                 showHelp();
             } else if ('/about' === jsToWasm) {
                 showAbout();
-            } else if (wasmToJs === "...") {
+            } else if ('/clear' === jsToWasm) {
+                clearLog();
+            } else if (wasmToJs === "") {
                 // No match for the pinyin ==> use the input string
                 chatLogPlainText(rawInput.trim());
             } else {

@@ -55,5 +55,8 @@ export function syncMessages(str) {
         inboxMsgSize += 1;
     }
     let outboxMsgSize = wasmExchangeMessages(inboxMsgSize);
+    if (outboxMsgSize == 0) {
+        return "";
+    }
     return utf8dec.decode(wasmShared.subarray(wasmOutbox, wasmOutbox + outboxMsgSize));
 }
