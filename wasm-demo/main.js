@@ -75,6 +75,7 @@ function enableChatMode() {
         } else {
             const wasmToJs = syncMessages(jsToWasm);
             suggest.textContent = wasmToJs;
+            //console.log(wasmToJs);
         }
     });
     // Update chat log for Enter/Return (send)

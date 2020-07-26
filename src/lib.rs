@@ -5,9 +5,17 @@
 // 2. Using #[no_mangle] on public functions is necessary for linking.
 // 3. Using #[no_mangle] on other functions reduces binary size and helps with
 //    disassebly and step tracing in browser dev tools.
+#[link(wasm_import_module = "js")]
+extern "C" {
+    #[no_mangle]
+    fn warn_wasm_panic();
+}
 use core::panic::PanicInfo;
 #[panic_handler]
-fn panic(_pi: &PanicInfo) -> ! {
+fn panic(_panic_info: &PanicInfo) -> ! {
+    unsafe {
+        warn_wasm_panic();
+    }
     loop {}
 }
 
@@ -15,24 +23,31 @@ fn panic(_pi: &PanicInfo) -> ! {
 mod autogen_hsk;
 
 // Shared mailbox buffers for copying messages in & out of the VM
-pub const MAILBOX_SIZE: usize = 73;
+pub const MAILBOX_SIZE: usize = 200;
 pub static mut WASM_INBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
 pub static mut WASM_OUTBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
+static mut OUTBOX_BYTES: usize = 0;
 
 // Copy message into outbox buffer; return cumulative message size in bytes.
 #[no_mangle]
-fn copy_to_outbox(message: &str, mut total_bytes: usize) -> usize {
+fn send(message: &str) {
     unsafe {
         for b in message.bytes() {
             // TODO: better strategy for overflow (vs. silently drop extra)
-            if total_bytes + 1 >= MAILBOX_SIZE {
-                break;
+            if OUTBOX_BYTES < MAILBOX_SIZE {
+                WASM_OUTBOX[OUTBOX_BYTES] = b;
+                OUTBOX_BYTES += 1;
             }
-            WASM_OUTBOX[total_bytes] = b;
-            total_bytes += 1;
         }
     }
-    total_bytes
+}
+
+// Conditionally copy debug messages to the outbox buffer
+#[no_mangle]
+fn trace(message: &str) {
+    if false {
+        send(message);
+    }
 }
 
 // Export location & size of utf8 mailbox buffers in VM shared memory
@@ -49,77 +64,140 @@ pub unsafe extern "C" fn wasm_mailbox_size() -> usize {
     MAILBOX_SIZE
 }
 
-// Look up 词语 for search query (pinyin keys are ASCII, but inbox is UTF-8).
-// Side-effect: copies utf8 result string to outbox buffer (append possible).
-// Returns: cumulative bytes of result copied to outbox (recursion possible).
 #[no_mangle]
-fn look_up(inbox_query: &str, outbox_total_bytes: usize) -> usize {
-    // Find start (inclusive lower bound) and end (exclusive upper bound) byte
-    // indexes for slicing each UTF-8 character of the query string.
-    let mut c_start_list: [usize; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
-    let mut c_end_list: [usize; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
-    let mut query_char_count = 0;
-    // Note: implicit `c_start_list[0] = 0;` from declaration above
-    for i in 1..inbox_query.len() + 1 {
-        if inbox_query.is_char_boundary(i) {
-            query_char_count += 1;
-            c_end_list[query_char_count - 1] = i;
-            if i < MAILBOX_SIZE {
-                c_start_list[query_char_count] = i;
+fn min(a: usize, b: usize) -> usize {
+    if a < b {
+        a
+    } else {
+        b
+    }
+}
+
+// Utf8Str adds character boundary metadata to &str to help with safely slicing
+// substrings. "Safely" means avoid panic from requesting slice with byte range
+// not aligned on encoded Unicode character boundaries.
+struct Utf8Str<'a> {
+    str_slice: &'a str,
+    char_start_list: [usize; MAILBOX_SIZE],
+    char_end_list: [usize; MAILBOX_SIZE],
+    char_count: usize,
+}
+impl<'a> Utf8Str<'a> {
+    #[no_mangle]
+    pub fn new(str_slice: &'a str) -> Utf8Str {
+        // Find start (inclusive lower bound) and end (exclusive upper bound) byte
+        // index of each UTF-8 character in string slice
+        let mut char_start_list: [usize; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
+        let mut char_end_list: [usize; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
+        let mut char_count = 0;
+        for i in 1..str_slice.len() + 1 {
+            if str_slice.is_char_boundary(i) {
+                if char_count + 1 < MAILBOX_SIZE {
+                    char_start_list[char_count + 1] = i;
+                }
+                if char_count < MAILBOX_SIZE {
+                    char_end_list[char_count] = i;
+                    char_count += 1;
+                }
             }
+        }
+        Utf8Str {
+            str_slice,
+            char_start_list: char_start_list,
+            char_end_list: char_end_list,
+            char_count,
         }
     }
 
-    // Recursively look up the longest matching substring of the query, starting from start_char.
-    // Side-effect: copy (append) matching substrings to the outbox buffer.
-    // Returns: total bytes copied to the outbox buffer.
-    fn recursive_slice_query(
-        inbox_query: &str,
-        c_start_list: &[usize; MAILBOX_SIZE],
-        c_end_list: &[usize; MAILBOX_SIZE],
-        start_char: usize,
-        end_char: usize,
-        outbox_total_bytes: usize,
-    ) -> usize {
-        for i in 0..(end_char - start_char) {
-            let start = c_start_list[start_char];
-            let end = c_end_list[end_char - i];
-            let query_slice = &inbox_query[start..end];
+    // Slice a substring using character range (not bytes!).
+    // Using get(start..end) instead of [start..end] avoids possible panic.
+    // This follows ..= start/inclusive end/inclusive range semantics.
+    // If you want the first character, call `char_slice(0, 0)`.
+    #[no_mangle]
+    pub fn char_slice(&self, start: usize, end: usize) -> Option<&str> {
+        if start < MAILBOX_SIZE && end < MAILBOX_SIZE {
+            let start_b = self.char_start_list[start];
+            let end_b = self.char_end_list[end];
+            self.str_slice.get(start_b..end_b)
+        } else {
+            None
+        }
+    }
+}
+
+// Look up 词语 for search query (pinyin keys are ASCII, but inbox is UTF-8).
+// Side-effect: copies utf8 result string to outbox buffer.
+#[no_mangle]
+fn look_up(inbox_query: &str) {
+    let query = Utf8Str::new(inbox_query);
+
+    // Recursively search for matching substrings of query in character range start..end.
+    // Side-effect: copy (append) matching substrings to outbox buffer.
+    #[no_mangle]
+    fn search(query: &Utf8Str, start: usize, end: usize, depth: usize) {
+        if start >= end {
+            // Stop Condition: query slice is empty
+            trace(&"0");
+            return;
+        }
+        if depth == 0 {
+            // Stop Condition: recursion too deep
+            trace(&"1");
+            return;
+        }
+        // Main search loop
+        let limit = end - start;
+        for i in 1..=limit {
+            let query_slice = match query.char_slice(start, end - i) {
+                Some(s) => s,
+                None => {
+                    trace(&"[E_CS]");
+                    &""
+                }
+            };
             match autogen_hsk::PINYIN.binary_search(&query_slice) {
                 Ok(ciyu_i) => {
-                    let outbox_total_bytes =
-                        copy_to_outbox(&autogen_hsk::CIYU[ciyu_i], outbox_total_bytes);
+                    send(&autogen_hsk::CIYU[ciyu_i]);
                     if i == 0 {
-                        // Full match
-                        return outbox_total_bytes;
+                        // Stop Condition: full match
+                        trace(&"2");
+                        return;
                     } else {
-                        let start_char = end_char - i + 1;
-                        return recursive_slice_query(
-                            inbox_query,
-                            c_start_list,
-                            c_end_list,
-                            start_char,
-                            end_char,
-                            outbox_total_bytes,
-                        );
+                        // Partial match... continue search on remainder of query
+                        trace(&"3");
+                        let rest = end - i + 1;
+                        search(&query, rest, end, depth - 1);
+                        return;
                     }
                 }
-                Err(_) => {}
+                Err(_) => {
+                    if i == limit {
+                        // Checked entire window... no match
+                        // ... skip one character and try again
+                        trace(&"4");
+                        let skip = match query.char_slice(start, start) {
+                            Some(s) => s,
+                            None => &"[E_SK]",
+                        };
+                        send(skip);
+                        if limit > 1 {
+                            let rest = start + 1;
+                            search(&query, rest, end, depth - 1);
+                        }
+                        return;
+                    } else {
+                        trace(&"5");
+                    }
+                }
             }
         }
-        return outbox_total_bytes;
+        trace(&"6");
     }
 
-    let start_char = 0;
-    let end_char = query_char_count - 1;
-    recursive_slice_query(
-        inbox_query,
-        &c_start_list,
-        &c_end_list,
-        start_char,
-        end_char,
-        outbox_total_bytes,
-    )
+    let start = 0;
+    let end = query.char_count;
+    let depth = 20;
+    search(&query, start, end, depth)
 }
 
 // Receive message; update state machine & outbox; return outbound message size (bytes).
@@ -132,6 +210,12 @@ pub extern "C" fn exchange_messages(n: usize) -> usize {
             Err(_) => &"", // TODO: handle mal-formed utf8 strings better
         };
     }
-    let outbox_total_bytes = 0;
-    look_up(&inbox_query, outbox_total_bytes)
+    // TODO: better way to track bytes count for the outbox buffer
+    unsafe {
+        OUTBOX_BYTES = 0;
+    }
+    look_up(&inbox_query);
+    unsafe {
+        return OUTBOX_BYTES;
+    }
 }
