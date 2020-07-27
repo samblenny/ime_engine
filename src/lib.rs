@@ -8,19 +8,22 @@
 #[link(wasm_import_module = "js")]
 extern "C" {
     #[no_mangle]
-    fn warn_wasm_panic();
+    fn js_warn_wasm_panic();
+    fn js_log_trace(code: i32);
 }
 use core::panic::PanicInfo;
 #[panic_handler]
 fn panic(_panic_info: &PanicInfo) -> ! {
     unsafe {
-        warn_wasm_panic();
+        js_warn_wasm_panic();
     }
     loop {}
 }
 
 // Include the static arrays generated from vocab list files
 mod autogen_hsk;
+// Index type for phrases listed in autogen_hsk::CIYU array
+type CiyuIndex = usize;
 
 // Shared mailbox buffers for copying messages in & out of the VM
 pub const MAILBOX_SIZE: usize = 200;
@@ -44,9 +47,11 @@ fn send(message: &str) {
 
 // Conditionally copy debug messages to the outbox buffer
 #[no_mangle]
-fn trace(message: &str) {
-    if false {
-        send(message);
+fn trace(trace_code: i32) {
+    if true {
+        unsafe {
+            js_log_trace(trace_code);
+        }
     }
 }
 
@@ -111,16 +116,56 @@ impl<'a> Utf8Str<'a> {
 
     // Slice a substring using character range (not bytes!).
     // Using get(start..end) instead of [start..end] avoids possible panic.
-    // This follows ..= start/inclusive end/inclusive range semantics.
-    // If you want the first character, call `char_slice(0, 0)`.
+    // This follows start..end range semantics (upper bound exclusive).
     #[no_mangle]
     pub fn char_slice(&self, start: usize, end: usize) -> Option<&str> {
-        if start < MAILBOX_SIZE && end < MAILBOX_SIZE {
+        // Subtle point: implicit test for end > 0
+        if start < end && end <= MAILBOX_SIZE {
             let start_b = self.char_start_list[start];
-            let end_b = self.char_end_list[end];
+            // Must not allow end==0 here. For usize, (0 - 1) will panic.
+            let end_b = self.char_end_list[end - 1];
             self.str_slice.get(start_b..end_b)
         } else {
             None
+        }
+    }
+}
+
+// Find longest 词语 match in start..end character window of query buffer.
+// Side-effect: None.
+// Return: (index in 词语 array for match, end boundary character in query for match)
+fn longest_match(query: &Utf8Str, start: usize, mut end: usize) -> Option<(CiyuIndex, usize)> {
+    end = min(query.char_count, end);
+    // Subtle point: implicit test for end > 0
+    while end > start {
+        if let Some(query_slice) = query.char_slice(start, end) {
+            if let Ok(ciyu) = autogen_hsk::PINYIN.binary_search(&query_slice) {
+                return Some((ciyu, end));
+            }
+        }
+        // Must not allow end==0 here. For usize, (0 - 1) will panic.
+        end -= 1;
+    }
+    return None;
+}
+
+// Search for 词语 matches in substrings of query.
+// Side-effect: Send results to outbox buffer.
+#[no_mangle]
+fn search(query: &Utf8Str, mut start: usize, end: usize) {
+    while start < end {
+        // Limit window size to length of longest phrase in pinyin array
+        let window_end = min(start + autogen_hsk::PINYIN_SIZE_MAX, end);
+        if let Some((ciyu_i, match_end)) = longest_match(query, start, window_end) {
+            // Match: skip matching portion of query (possibly all of it)
+            send(&autogen_hsk::CIYU[ciyu_i]);
+            start = match_end;
+        } else {
+            // No match... skip one character
+            if let Some(skip) = query.char_slice(start, start + 1) {
+                send(skip);
+            }
+            start += 1;
         }
     }
 }
@@ -130,55 +175,12 @@ impl<'a> Utf8Str<'a> {
 #[no_mangle]
 fn look_up(inbox_query: &str) {
     let query = Utf8Str::new(inbox_query);
-
-    // Recursively search for matching substrings of query in character range start..end.
-    // Side-effect: copy (append) matching substrings to outbox buffer.
-    #[no_mangle]
-    fn search(query: &Utf8Str, start: usize, end: usize, depth: usize) {
-        // Stop Conditions: query slice empty or recursion too deep
-        if start >= end || depth == 0 {
-            return;
-        }
-        let limit = end - start;
-        for i in 1..=limit {
-            if let Some(query_slice) = query.char_slice(start, end - i) {
-                if let Ok(ciyu_i) = autogen_hsk::PINYIN.binary_search(&query_slice) {
-                    send(&autogen_hsk::CIYU[ciyu_i]);
-                    // Full match: stop
-                    // Partial match: continue search on remainder of query
-                    if i > 0 {
-                        let rest = end - i + 1;
-                        search(&query, rest, end, depth - 1);
-                    }
-                    return;
-                }
-            }
-        }
-        // Err(_) => {
-        //     if i == limit {
-        //         // No match... skip first character and try again
-        //         if let Some(skip) = query.char_slice(start, start) {
-        //             send(skip);
-        //         } ese {
-        //             trace(&"[E_SKP]");
-        //         }
-        //         if limit > 1 {
-        //             let rest = start + 1;
-        //             search(&query, rest, end, depth - 1);
-        //         }
-        //         return;
-        //     }
-        // }
-        trace(&"6");
-    }
-
     let start = 0;
     let end = query.char_count;
-    let depth = 20;
-    search(&query, start, end, depth)
+    search(&query, start, end)
 }
 
-// Receive message; update state machine & outbox; return outbound message size (bytes).
+// Receive query message, search, put results in outbox.
 #[no_mangle]
 pub extern "C" fn exchange_messages(n: usize) -> usize {
     let inbox_query: &str;

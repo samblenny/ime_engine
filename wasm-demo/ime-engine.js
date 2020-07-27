@@ -4,14 +4,19 @@ const wasmModule = "ime-engine.wasm";
 // Load ime-engine WASM module, bind shared memory for mailboxes, then invoke callback
 export function loadIMEEngineWasm(callback) {
     var importObject = {
-        js: { warn_wasm_panic: () => {
-            // The WASM panic handler calls this in the statement before a
-            // `loop {}` that will will peg the cpu at 100% if allowed to run.
-            // Since rust stable does not offer way for no_std wasm modules to
-            // halt execution after error, throw js exception here instead.
-            console.error("the wasm module panicked");
-            throw "wasm panic";
-        }}
+        js: { js_warn_wasm_panic: () =>
+              {
+                  // The WASM panic handler calls this in the statement before a
+                  // `loop {}` that will will peg the cpu at 100% if allowed to run.
+                  // Since rust stable does not offer way for no_std wasm modules to
+                  // halt execution after error, throw js exception here instead.
+                  console.error("the wasm module panicked");
+                  throw "wasm panic";
+              },
+              js_log_trace: (traceCode) => {
+                  console.log("wasm trace code:", traceCode);
+              },
+            },
     };
     if ("instantiateStreaming" in WebAssembly) {
         // The new, more efficient way
