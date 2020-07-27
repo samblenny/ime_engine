@@ -149,6 +149,35 @@ fn longest_match(query: &Utf8Str, start: usize, mut end: usize) -> Option<(CiyuI
     return None;
 }
 
+// Expand 词语 matches to include choice prompts.
+// Side-effect: Send results to oubox buffer.
+fn expand_ciyu(ciyu: &str) {
+    let n = ciyu.split("\t").count();
+    if n == 1 {
+        send(ciyu);
+    } else {
+        send(&"（");
+        for (i, choice) in ciyu.split("\t").enumerate() {
+            send(match i {
+                0 => &"1",
+                1 => &"2",
+                2 => &"3",
+                3 => &"4",
+                4 => &"5",
+                5 => &"6",
+                6 => &"7",
+                7 => &"8",
+                _ => &"9",
+            });
+            send(choice);
+            if i + 1 < n {
+                send(&" ");
+            }
+        }
+        send(&"）");
+    }
+}
+
 // Search for 词语 matches in substrings of query.
 // Side-effect: Send results to outbox buffer.
 #[no_mangle]
@@ -158,7 +187,7 @@ fn search(query: &Utf8Str, mut start: usize, end: usize) {
         let window_end = min(start + autogen_hsk::PINYIN_SIZE_MAX, end);
         if let Some((ciyu_i, match_end)) = longest_match(query, start, window_end) {
             // Match: skip matching portion of query (possibly all of it)
-            send(&autogen_hsk::CIYU[ciyu_i]);
+            expand_ciyu(&autogen_hsk::CIYU[ciyu_i]);
             start = match_end;
         } else {
             // No match... skip one character
