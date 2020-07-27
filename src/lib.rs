@@ -4,7 +4,7 @@
 //    and wasm-pack.
 // 2. Using #[no_mangle] on public functions is necessary for linking.
 // 3. Using #[no_mangle] on other functions reduces binary size and helps with
-//    disassebly and step tracing in browser dev tools.
+//    disassembly and step tracing in browser dev tools.
 #[link(wasm_import_module = "js")]
 extern "C" {
     #[no_mangle]
