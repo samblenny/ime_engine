@@ -135,62 +135,40 @@ fn look_up(inbox_query: &str) {
     // Side-effect: copy (append) matching substrings to outbox buffer.
     #[no_mangle]
     fn search(query: &Utf8Str, start: usize, end: usize, depth: usize) {
-        if start >= end {
-            // Stop Condition: query slice is empty
-            trace(&"0");
+        // Stop Conditions: query slice empty or recursion too deep
+        if start >= end || depth == 0 {
             return;
         }
-        if depth == 0 {
-            // Stop Condition: recursion too deep
-            trace(&"1");
-            return;
-        }
-        // Main search loop
         let limit = end - start;
         for i in 1..=limit {
-            let query_slice = match query.char_slice(start, end - i) {
-                Some(s) => s,
-                None => {
-                    trace(&"[E_CS]");
-                    &""
-                }
-            };
-            match autogen_hsk::PINYIN.binary_search(&query_slice) {
-                Ok(ciyu_i) => {
+            if let Some(query_slice) = query.char_slice(start, end - i) {
+                if let Ok(ciyu_i) = autogen_hsk::PINYIN.binary_search(&query_slice) {
                     send(&autogen_hsk::CIYU[ciyu_i]);
-                    if i == 0 {
-                        // Stop Condition: full match
-                        trace(&"2");
-                        return;
-                    } else {
-                        // Partial match... continue search on remainder of query
-                        trace(&"3");
+                    // Full match: stop
+                    // Partial match: continue search on remainder of query
+                    if i > 0 {
                         let rest = end - i + 1;
                         search(&query, rest, end, depth - 1);
-                        return;
                     }
-                }
-                Err(_) => {
-                    if i == limit {
-                        // Checked entire window... no match
-                        // ... skip one character and try again
-                        trace(&"4");
-                        let skip = match query.char_slice(start, start) {
-                            Some(s) => s,
-                            None => &"[E_SK]",
-                        };
-                        send(skip);
-                        if limit > 1 {
-                            let rest = start + 1;
-                            search(&query, rest, end, depth - 1);
-                        }
-                        return;
-                    } else {
-                        trace(&"5");
-                    }
+                    return;
                 }
             }
         }
+        // Err(_) => {
+        //     if i == limit {
+        //         // No match... skip first character and try again
+        //         if let Some(skip) = query.char_slice(start, start) {
+        //             send(skip);
+        //         } ese {
+        //             trace(&"[E_SKP]");
+        //         }
+        //         if limit > 1 {
+        //             let rest = start + 1;
+        //             search(&query, rest, end, depth - 1);
+        //         }
+        //         return;
+        //     }
+        // }
         trace(&"6");
     }
 
