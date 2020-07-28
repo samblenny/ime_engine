@@ -1,36 +1,35 @@
-# IME-Engine
+# ime-engine
 
-IME-Engine provides an IME back-end (rust) and a vocabulary data entry
-workflow (ruby) for developers who want to embed a lightweight, customizable
-IME into other software.
+ime-engine provides an Input Method Editor back-end (rust) and a
+vocabulary data entry workflow (ruby) for developers who want to embed a
+lightweight, customizable IME into other software.
 
-**PLEASE NOTE: This is just a hobby project. I hope to implement the vision I
-describe below in the not-too-distant future, but... no promises. For now,
-please consider this vaporware. I will remove this note if I make sufficient
-progress.**
+Key Features:
+- Small and efficient
+- Builds no_std and does not use heap allocation
+- Designed for plain text user interfaces (CLI or terminal-style web UI)
+
+Currently Supported Languages:
+- Simplified Chinese with 1200 word HSK4 level vocabulary
 
 
 ## Live Demo
 
-To view the WASM demo with current progress:
-
+You can try the IME on a demo web page built with WebAssembly (WASM):
 - hosted page: <https://samblenny.github.io/ime-engine/wasm-demo/>
 - code: [wasm-demo/](wasm-demo/)
 
 
 ## Non-Features
 
-1. This is not a full IME.
+1. This is not intended for use with OS-level IME software like Rime, Ibus,
+   or Fcitx. Rather, you can use ime-engine to embed lightweight, stand-alone
+   IME features directly into other software.
 
-2. This does not include AI stuff or a very large, general-purpose vocabulary.
-   There is no auto-correct or fuzzy predictive completion.
+2. This does not include AI stuff or a very large vocabulary. There is no
+   auto-correct. No spell-check. No fuzzy predictive completion.
 
-3. This is not a rust crate of the sort where you just add the dependency and
-   start making API calls. The workflow for customizing vocab lists uses ruby
-   scripts to generate rust source code. Ruby v2.3 or later should work on
-   macOS and linux (windows not tested). No gems needed.
-
-4. This does not use wasm-pack. I build the WASM module using cargo, rustc with
+3. This does not use wasm-pack. I build the WASM module using cargo, rustc with
    wasm32-unknown-unknown, and hand-coded javascript bindings.
 
 
@@ -56,10 +55,13 @@ To view the WASM demo with current progress:
 
 ## Roadmap
 
-My phase 1 goal is to build a rust library for translating Hanyu Pinyin from
-the HSK1 vocabulary list into Simplified Chinese characters. If that works, I
-want to expand the vocabulary list to HSK3 or maybe HSK4. I might also try
-adding Hangul, Hiragana, and Katakana.
+- [x] Phase 1: Proof of concept WASM demo page with terminal-style UI and
+      working IME for 1200 word HSK4 vocabulary.
+- [ ] Phase 2: Tests, build workflow, and documentation for using ime-engine as
+      a library for building with and without no_std.
+- [ ] Phase 3: Bigger vocabulary. At least HSK5 (2500). Maybe HSK6 (5000).
+- [ ] Phase 4: Korean and Japanese (maybe). Perhaps add support for Hangul,
+      hiragana, and katakana. Probably not Kanji though.
 
 
 ## Glossary
