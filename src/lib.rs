@@ -31,7 +31,8 @@ pub static mut WASM_INBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
 pub static mut WASM_OUTBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
 static mut OUTBOX_BYTES: usize = 0;
 
-// Copy message into outbox buffer; return cumulative message size in bytes.
+// Append copy of message into outbox buffer.
+// Side-effect: Update outbox buffer and byte count.
 #[no_mangle]
 fn send(message: &str) {
     unsafe {
@@ -45,7 +46,8 @@ fn send(message: &str) {
     }
 }
 
-// Conditionally copy debug messages to the outbox buffer
+// Log trace codes to the javascript console to help debug control flow.
+// Side-effect: Add to javascript console log.
 #[no_mangle]
 fn trace(trace_code: i32) {
     if true {
@@ -156,7 +158,7 @@ fn expand_ciyu(ciyu: &str) {
     if n == 1 {
         send(ciyu);
     } else {
-        send(&"（");
+        send(&" (");
         for (i, choice) in ciyu.split("\t").enumerate() {
             send(match i {
                 0 => &"1",
@@ -174,7 +176,7 @@ fn expand_ciyu(ciyu: &str) {
                 send(&" ");
             }
         }
-        send(&"）");
+        send(&") ");
     }
 }
 
