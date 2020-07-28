@@ -35,7 +35,7 @@ function showHelp() {
                     '<ul><li> Use lowercase. </li>\n' +
                     '<li> Omit tone marks. For á, type <strong>a</strong> </li>\n' +
                     '<li> Umlaut is special. For ü, type <strong>v</strong> </li>\n' +
-                    '<li> Pick options with numbers, tab, or space. </li>\n' +
+                    '<li> For choices like (1喝 2和 3河), pick with numbers or space </li>\n' +
                     '<li> Send with return or enter. </li> </ul>\n' +
                     '<p> Example: <br>\n' +
                     '&nbsp; "woxiang he guozhi", plus return, makes "<span lang="zh-CN">我想喝果汁</span>" </p>\n' +
