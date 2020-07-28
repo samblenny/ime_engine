@@ -38,7 +38,7 @@ function showHelp() {
                     '<li> Pick options with numbers, tab, or space. </li>\n' +
                     '<li> Send with return or enter. </li> </ul>\n' +
                     '<p> Example: <br>\n' +
-                    '&nbsp; "wo xiang he guozhi", plus return, makes "<span lang="zh-CN">我想喝果汁</span>" </p>\n' +
+                    '&nbsp; "woxiang he guozhi", plus return, makes "<span lang="zh-CN">我想喝果汁</span>" </p>\n' +
                     '<p> Slash Commands: <span>/</span>help <span>/</span>about <span>/</span>clear </p>');
 }
 
@@ -109,7 +109,9 @@ function wasmDemo() {
     // To test VoiceOver on macOS, use Safari. VoiceOver on iOS works for bilingual.
     // The "<span>/</span>help..." stuff causes VoiceOver to say "slash help" instead of just "help".
     chatLogSafeHTML("<p>This terminal has a built in Simplified Chinese IME. " +
-                    "You can type pinyin phrases, other text, or <span>/</span>commands. " +
+                    "You can type pinyin phrases, other text, or <span>/</span>commands.<br> " +
+                    "Try <strong>wo xiang he guozhi</strong> or <strong>woxiangheguozhi11</strong> " +
+                    "(...one one) <br> " +
                     "Try <strong><span>/</span>help</strong> or <strong><span>/</span>about</strong>.</p>");
     enableChatMode();
 }
