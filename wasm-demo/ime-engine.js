@@ -3,16 +3,31 @@ const wasmModule = "ime-engine.wasm";
 
 // Load ime-engine WASM module, bind shared memory for mailboxes, then invoke callback
 export function loadIMEEngineWasm(callback) {
+    var importObject = {
+        js: { js_warn_wasm_panic: () =>
+              {
+                  // The WASM panic handler calls this in the statement before a
+                  // `loop {}` that will will peg the cpu at 100% if allowed to run.
+                  // Since rust stable does not offer way for no_std wasm modules to
+                  // halt execution after error, throw js exception here instead.
+                  console.error("the wasm module panicked");
+                  throw "wasm panic";
+              },
+              js_log_trace: (traceCode) => {
+                  console.log("wasm trace code:", traceCode);
+              },
+            },
+    };
     if ("instantiateStreaming" in WebAssembly) {
         // The new, more efficient way
-        WebAssembly.instantiateStreaming(fetch(wasmModule))
+        WebAssembly.instantiateStreaming(fetch(wasmModule), importObject)
             .then(initMailboxBindings)
             .then(callback);
     } else {
         // Fallback for Safari
         fetch(wasmModule)
             .then(response => response.arrayBuffer())
-            .then(bytes => WebAssembly.instantiate(bytes))
+            .then(bytes => WebAssembly.instantiate(bytes, importObject))
             .then(initMailboxBindings)
             .then(callback);
     }
@@ -55,5 +70,8 @@ export function syncMessages(str) {
         inboxMsgSize += 1;
     }
     let outboxMsgSize = wasmExchangeMessages(inboxMsgSize);
+    if (outboxMsgSize == 0) {
+        return "";
+    }
     return utf8dec.decode(wasmShared.subarray(wasmOutbox, wasmOutbox + outboxMsgSize));
 }

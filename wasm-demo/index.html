@@ -3,41 +3,40 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>IME-Engine WASM Demo</title>
+<title>wasm demo</title>
 <style>
 html{-webkit-text-size-adjust:none;font-size:18px;font-family:sans-serif;}
 html,body{height:100vh;width:100vw;background:#ddd;}
-html,body,div,span,pre,input,p,a,h1{margin:0;padding:0;box-sizing:border-box;}
-body,div,span,pre,input,p,h1{font-size:inherit;color:inherit;}
-h1{margin:10px 0 3px 3px;font-size:1.4em;display:inline-block;}
+html,body,div,span,h1,h2,p,ol,ul,a,input{margin:0;padding:0;box-sizing:border-box;}
+body,div,span,h1,h2,p,ol,ul,input{font-size:inherit;color:inherit;}
+h1{display:inline-block;}
+h1,h2{margin:8px 0 3px 3px;font-size:1em;}
+ol,ul{padding-left:2.5em;}
+.h{visibility:hidden;}
+.sm{font-size:0.75em;}
+.cmd{border-radius:10px;padding:5px;margin:7px 2px 14px;background:#d6eff3;}
 #log,#suggest,#compose,p{padding:5px 10px;}
 #log,#suggest,#compose{border:4.5px solid #ccc;background:#f5f5f5;}
 header{grid-area:H;}
+main{grid-area:M;}
 #log{grid-area:L;overflow:auto;border-top-left-radius:14px;border-top-right-radius:14px;border-bottom:none;}
 #suggest{grid-area:S;border-top-width:3px;border-bottom-width:3px;}
 #compose{grid-area:C;border-bottom-left-radius:14px;border-bottom-right-radius:14px;border-top:none;}
 #compose{-webkit-appearance:none;outline:none;border-top:none;background:#fff;}
-body{display:grid;
-     grid:". H ." auto
-          ". L ." 2fr
-          ". S ." 2em
-          ". C ." 2em
-          ". . ." 1fr / 1fr minmax(auto,640px) 1fr;}
+body{display:grid;grid:". H ." auto ". M ." minmax(11em,2fr) ". . ." 1fr / 1fr minmax(auto,640px) 1fr;}
+main{display:grid;grid:"L" 1fr "S" 2em "C" 2em / 1fr;}
 </style>
 </head>
 <body>
 <header>
-  <h1>IME-Engine WASM Demo</h1>
-  <p>source code:
-    <a href="https://github.com/samblenny/ime-engine/tree/master/wasm-demo/">samblenny/ime-engine/wasm-demo</a>
-  </p>
-  <p>usage: type
-  a <a href="https://github.com/samblenny/ime-engine/tree/master/vocab/">pinyin
-  word</a> in bottom box, hit return key (or enter)</p>
+  <h1>wasm demo</h1>
+  &nbsp;<span class="sm">(to learn more, try <strong>/help</strong> or <strong>/about</strong> )</span>
 </header>
-<pre id="log"></pre>
-<pre id="suggest"></pre>
-<input id="compose" type="text" spellcheck="false" autofocus="autofocus">
+<main>
+  <div id="log" role="log" aria-label="chat log" aria-live="polite"></div>
+  <div id="suggest"></div>
+  <input id="compose" aria-label="chat box" type="text" spellcheck="false" autofocus="autofocus">
+</main>
 <script type="module" src="main.js"></script>
 </body>
 </html>
