@@ -247,7 +247,7 @@ fn expand_choice_and_send(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult 
         send(ciyu);
         return ExpandChoiceResult::WasNotChoice;
     }
-    // Try to pick a choice (falls through if number is not valid)
+    // Try to pick a choice (return immediately if number out of range)
     let pick = match maybe_choice {
         ' ' => 1, // Spacebar picks default option (label=1)
         '1' => 1,
@@ -268,6 +268,9 @@ fn expand_choice_and_send(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult 
                 return ExpandChoiceResult::WasChoice;
             }
         }
+        // Out of range for possible choice, so return without send() to
+        // prevent duplicate choice prompting
+        return ExpandChoiceResult::WasNotChoice;
     }
     // Show all choices
     send(&" (");
