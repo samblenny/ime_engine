@@ -4,8 +4,9 @@
 
 ime-engine provides an Input Method Editor back-end (rust) and a
 vocabulary data entry workflow (ruby) for developers who want to embed a
-lightweight, customizable IME into other software. Try the
-[wasm demo](https://samblenny.github.io/ime-engine/wasm-demo/).
+lightweight, customizable IME into other software.
+
+Try the [WebAssembly demo](https://samblenny.github.io/ime-engine/wasm-demo/).
 
 ## Features
 
