@@ -23,11 +23,13 @@ lightweight, customizable IME into other software. Try the
 
 ## WebAssembly Demo
 
+![ime-engine WASM demo screenshot](demo-screenshot.jpg)
+
 Demo web page with terminal-style UI and WebAssembly (WASM) back-end:
 - <https://samblenny.github.io/ime-engine/wasm-demo/>
 - code: [wasm-demo/](wasm-demo/)
 
-Things to try typing into the demo:
+Things to try typing in demo terminal:
 - `/help` + return
 - `woxiangheguozhi`
 - `woxiang he guozhi` (spaces after g and e)
