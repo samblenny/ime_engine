@@ -1,5 +1,7 @@
 # ime-engine
 
+![ime-engine WASM demo screenshot](demo-screenshot.jpg)
+
 ime-engine provides an Input Method Editor back-end (rust) and a
 vocabulary data entry workflow (ruby) for developers who want to embed a
 lightweight, customizable IME into other software.
