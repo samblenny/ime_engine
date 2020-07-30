@@ -393,7 +393,6 @@ mod tests {
                 }
             }
         }
-        assert_eq!(i, qry.len());
         // Run query
         let query_len = i;
         let reply_len = crate::exchange_messages(query_len);
@@ -402,8 +401,26 @@ mod tests {
     }
 
     #[test]
-    fn empty_query() {
+    fn min_query() {
         assert_eq!("", query(&""));
+    }
+
+    #[test]
+    fn max_query() {
+        let buf_max = ['A' as u8; crate::MAILBOX_SIZE];
+        let qry_max = core::str::from_utf8(&buf_max).unwrap();
+        // This should be passed through unchanged as ASCII
+        assert_eq!(qry_max, query(qry_max));
+    }
+
+    #[test]
+    fn max_query_plus_1_truncate() {
+        let buf_max = ['A' as u8; crate::MAILBOX_SIZE];
+        let qry_max = core::str::from_utf8(&buf_max).unwrap();
+        let buf_1_too_big = ['A' as u8; crate::MAILBOX_SIZE + 1];
+        let qry_1_too_big = core::str::from_utf8(&buf_1_too_big).unwrap();
+        // This should truncate the query
+        assert_eq!(qry_max, query(qry_1_too_big));
     }
 
     #[test]
