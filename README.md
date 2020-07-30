@@ -84,8 +84,8 @@ Things to try typing in demo terminal:
 | Tool | Purpose |
 |--|--|
 | rustup | Get rustc, cargo, and wasm32-unknown-unknown |
-| ruby v2.3+ | Local web server, Code generation from vocabulary lists |
-| GNU make | Cargo is not good for multi-target builds; make saves typing long arguments for rustc and cargo test |
+| ruby v2.3+ | Local web server for WebAssembly Demo + Rust code generation from vocab lists |
+| GNU make | Automate long arguments needed by cargo for multi-target build and test |
 
 Tested July 2020 on macOS Mojave and Debian Stretch.
 
