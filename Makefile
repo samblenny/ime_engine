@@ -17,9 +17,10 @@ run: $(RUST_SRC)
 wasm: $(RUST_SRC)
 	rustc $(WASM_ARGS) src/lib.rs -o $(WASM_OUTPUT)
 
-# Note: ime-engine IS NOT thread safe, so must not run parallel tests
+# ime-engine IS NOT thread safe, so turn off parallel tests
+# Point of --lib is to turn off messages about doc tests
 test: $(RUST_SRC)
-	cargo test -- --test-threads 1
+	cargo test --lib -- --test-threads 1
 
 .PHONY: clean
 clean:
