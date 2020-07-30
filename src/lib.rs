@@ -5,13 +5,18 @@
 // 2. Using #[no_mangle] on public functions is necessary for linking.
 // 3. Using #[no_mangle] on other functions reduces binary size and helps with
 //    disassembly and step tracing in browser dev tools.
+#[cfg(not(test))]
 #[link(wasm_import_module = "js")]
 extern "C" {
     #[no_mangle]
     fn js_warn_wasm_panic();
     fn js_log_trace(code: i32);
 }
+#[cfg(test)]
+use crate::tests::js_log_trace;
+#[cfg(not(test))]
 use core::panic::PanicInfo;
+#[cfg(not(test))]
 #[panic_handler]
 fn panic(_panic_info: &PanicInfo) -> ! {
     unsafe {
@@ -370,5 +375,46 @@ pub extern "C" fn exchange_messages(n: usize) -> usize {
     look_up(&inbox_query);
     unsafe {
         return OUTBOX_BYTES;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    // When compiled wasm32, this link symbol comes from WebAssembly VM
+    pub unsafe extern "C" fn js_log_trace(_: i32) {
+        assert!(false);
+    }
+
+    // Send query string to ime-engine; THIS IS NOT THREAD SAFE.
+    // Returns: reply string
+    fn query(qry: &str) -> &str {
+        // Encode UTF-8 bytes to inbox buffer
+        let mut i: usize = 0;
+        unsafe {
+            for b in qry.bytes() {
+                if i < crate::MAILBOX_SIZE {
+                    crate::WASM_INBOX[i] = b;
+                    i += 1;
+                }
+            }
+        }
+        assert_eq!(i, qry.len());
+        // Run query
+        let query_len = i;
+        let reply_len = crate::exchange_messages(query_len);
+        // Decode reply string as UTF-8 byts from outbox
+        unsafe {
+            core::str::from_utf8(&crate::WASM_OUTBOX[0..reply_len]).unwrap()
+        }
+    }
+
+    #[test]
+    fn empty_query() {
+        assert_eq!("", query(&""));
+    }
+
+    #[test]
+    fn choice_xiang1() {
+        assert_eq!("想", query(&"xiang1"));
     }
 }

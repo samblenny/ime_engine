@@ -1,7 +1,5 @@
-# WASM Notes:
-# Configuring cargo to compile for the wasm32-unknown-unknown target requires
-# creating a Cargo config toml file. See .cargo/config
-
+# Building for WASM is too awkward with cargo, so I use make.
+# See ./Makefile for WASM building details.
 [package]
 name = "ime-engine"
 version = "0.1.0"
@@ -9,14 +7,6 @@ authors = ["samblenny"]
 edition = "2018"
 
 [lib]
-crate-type = ["cdylib"]
-
-# Normal debug stuff doesn't work well with WASM, so have `cargo build` do less.
-[profile.dev]
-debug = 0
-debug-assertions = false
-lto = true
-opt-level = "s"
 
 [dependencies]
 
