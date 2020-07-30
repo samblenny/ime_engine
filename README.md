@@ -92,7 +92,7 @@ Tested July 2020 on macOS Mojave and Debian Stretch.
 1. Install rustc with rustup. See <https://www.rust-lang.org/tools/install>
 2. Configure PATH environment variable: add `export PATH="$PATH:$HOME/.cargo/bin"`
    to .bash_profile or whatever
-3. Add WASM compile target: `rustup target add wasm32-unknown-unknown`
+3. Add WebAssembly compile target: `rustup target add wasm32-unknown-unknown`
 4. Make sure you have a ruby interpreter v2.3 or later: `ruby --version`
    - For macOS Mojave or Catalina, default system ruby should work fine. For Big Sur,
      scripting language runtimes will not be installed by default
@@ -111,7 +111,7 @@ make test
 ```
 
 
-### Build and run WASM demo
+### Build and run WebAssembly demo
 
 1. From repository root directory:
    ```
