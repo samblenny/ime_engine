@@ -410,4 +410,10 @@ mod tests {
     fn choice_xiang1() {
         assert_eq!("想", query(&"xiang1"));
     }
+
+    #[test]
+    fn zhang3chang2() {
+        assert!(query(&"zhang").contains("长"));
+        assert!(query(&"chang").contains("长"));
+    }
 }
