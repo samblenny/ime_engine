@@ -21,7 +21,7 @@ lightweight, customizable IME into other software. Try the
 - Intended for plain text user interfaces (CLI or terminal-style web UI)
 
 
-## WebAssembly Demo
+## Try the WebAssembly Demo
 
 ![ime-engine WASM demo screenshot](demo-screenshot.jpg)
 
@@ -36,6 +36,29 @@ Things to try typing in demo terminal:
 - `woxiang1he1guozhi` (ones in the middle)
 - `woxiangheguozhi11` (ones at the end)
 - `woxiang2he2guozhi` (twos instead of ones)
+
+
+## Try the CLI Demo
+
+To build and run the CLI demo, invoke `make run` from repository's root
+directory, like this:
+
+```
+$ make run
+cargo run --quiet
+
+woxiangheguozhi
+我 (1想 2向 3像 4香 5响)  (1喝 2和 3河) 果汁
+
+woxiang heguozhi
+我想 (1喝 2和 3河) 果汁
+
+woxiang he guozhi
+我想喝果汁
+
+woxianheguozhi11
+我先喝果汁
+```
 
 
 ## Non-Features
