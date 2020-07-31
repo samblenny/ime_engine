@@ -15,7 +15,7 @@ lightweight, customizable IME into other software. Try the
 - Maybe Later: 5000 word HSK6, Hangul, Hiragana, Katakana
 
 ### Design
-- Small and efficient (.wasm file with 1200 word vocab is 55 KB)
+- Small and efficient (.wasm file with 1200 word vocab is 44 KB)
 - Sacrifice ease of typing for better privacy (no AI stuff)
 - Builds no_std and does not use heap allocation
 - Intended for plain text user interfaces (CLI or terminal-style web UI)
