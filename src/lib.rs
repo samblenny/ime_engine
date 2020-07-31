@@ -392,9 +392,9 @@ pub extern "C" fn query_shared_mem_ipc(n: usize) -> usize {
 
 #[cfg(test)]
 mod tests {
+    use super::constants;
     use super::wasm::ipc_mem;
     use super::BufWriter;
-    use super::constants;
 
     // Send query string to ime-engine; THIS IS NOT THREAD SAFE.
     // Returns: reply string.
@@ -499,5 +499,30 @@ mod tests {
         assert_eq!(query(&"baiSEde🐇✨11"), "白SE的🐇✨");
         assert_eq!(query(&"RABBIT SPARKLES 11"), "RABBIT SPARKLES 11");
         assert_eq!(query(&"XIANGHE"), "XIANGHE");
+    }
+
+    #[test]
+    fn matching_buffer_sizes() {
+        let utf8s = super::Utf8Str::new(&"slice");
+        let u_len_s = utf8s.char_start_list.len();
+        let u_len_e = utf8s.char_end_list.len();
+        let in_len: usize;
+        let out_len: usize;
+        unsafe {
+            in_len = ipc_mem::IN.len();
+        }
+        unsafe {
+            out_len = ipc_mem::OUT.len();
+        }
+        let tq = super::lex::TokenQueue::new();
+        let tq_len = tq.queue.len();
+        let sink = super::BufWriter::new();
+        let sink_buf_len = sink.buf.len();
+        assert_eq!(constants::BUF_SIZE, u_len_s);
+        assert_eq!(constants::BUF_SIZE, u_len_e);
+        assert_eq!(constants::BUF_SIZE, in_len);
+        assert_eq!(constants::BUF_SIZE, out_len);
+        assert_eq!(constants::BUF_SIZE, tq_len);
+        assert_eq!(constants::BUF_SIZE, sink_buf_len);
     }
 }
