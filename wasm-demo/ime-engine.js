@@ -35,20 +35,20 @@ export function loadIMEEngineWasm(callback) {
 
 // Shared memory bindings for mailbox buffers for JS <--> WASM message passing
 var wasmShared;
-var wasmInbox;
-var wasmOutbox;
-var wasmMailboxMaxSize;
-var wasmExchangeMessages;
+var wasmQueryBuf;
+var wasmReplyBuf;
+var wasmBufferSize;
+var wasmQuerySharedMemIPC;
 var wasmInstanceReady = false;
 
 // Callback to initialize shared memory mailbox bindings once WASM module is instantiated
 function initMailboxBindings(result) {
     let exports = result.instance.exports;
     wasmShared = new Uint8Array(exports.memory.buffer);
-    wasmInbox = exports.wasm_inbox_ptr();
-    wasmOutbox = exports.wasm_outbox_ptr();
-    wasmMailboxMaxSize = exports.wasm_mailbox_size();
-    wasmExchangeMessages = exports.exchange_messages;
+    wasmQueryBuf = exports.wasm_query_buf_ptr();
+    wasmReplyBuf = exports.wasm_reply_buf_ptr();
+    wasmBufferSize = exports.wasm_buffer_size();
+    wasmQuerySharedMemIPC = exports.query_shared_mem_ipc;
     wasmInstanceReady = true;
 }
 
@@ -64,14 +64,14 @@ export function syncMessages(str) {
         throw "syncMessages cannot talk to ime-engine.wasm because the wasm instance is not ready";
     }
     let utf8Message = utf8enc.encode(str);
-    let inboxMsgSize = 0;
-    for (let i=0; i<utf8Message.length && i<wasmMailboxMaxSize; i++) {
-        wasmShared[wasmInbox+i] = utf8Message[i];
-        inboxMsgSize += 1;
+    let querySize = 0;
+    for (let i=0; i<utf8Message.length && i<wasmBufferSize; i++) {
+        wasmShared[wasmQueryBuf+i] = utf8Message[i];
+        querySize += 1;
     }
-    let outboxMsgSize = wasmExchangeMessages(inboxMsgSize);
-    if (outboxMsgSize == 0) {
+    let replySize = wasmQuerySharedMemIPC(querySize);
+    if (replySize == 0) {
         return "";
     }
-    return utf8dec.decode(wasmShared.subarray(wasmOutbox, wasmOutbox + outboxMsgSize));
+    return utf8dec.decode(wasmShared.subarray(wasmReplyBuf, wasmReplyBuf + replySize));
 }
