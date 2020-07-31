@@ -441,4 +441,32 @@ mod tests {
             assert!(query(normalized_pinyin).contains(ciyu));
         }
     }
+
+    #[test]
+    fn choosing_ciyu_with_numbers_and_spaces() {
+        assert!(query(&"xiang").contains("(1想"));
+        assert!(query(&"xiang").contains("2向"));
+        assert_eq!(query(&"xiang "), "想");
+        assert!(query(&" xiang").starts_with(" "));
+        assert!(query(&" xiang").contains("(1想"));
+        assert_eq!(query(&"xiang1"), "想");
+        assert_eq!(query(&"xiang2"), "向");
+        assert!(query(&"xianghe").contains("(1想"));
+        assert!(query(&"xianghe").contains("2向"));
+        assert!(query(&"xianghe").contains("(1喝"));
+        assert!(query(&"xianghe").contains("2和"));
+        assert!(query(&"xiang he").starts_with("想"));
+        assert!(query(&"xiang he").contains("(1喝"));
+        assert!(query(&"xiang1he").starts_with("想"));
+        assert!(query(&"xiang1he").contains("(1喝"));
+        assert!(query(&"xianghe1").starts_with("想"));
+        assert!(query(&"xianghe1").contains("(1喝"));
+        assert!(query(&"xianghe ").starts_with("想"));
+        assert!(query(&"xianghe ").contains("(1喝"));
+        assert_eq!(query(&"xianghe 1"), "想喝");
+        assert_eq!(query(&"xianghe11"), "想喝");
+        assert_eq!(query(&"xiang he1"), "想喝");
+        assert_eq!(query(&"xiang he "), "想喝");
+        assert_eq!(query(&"xianghe 2"), "想和");
+    }
 }
