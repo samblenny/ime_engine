@@ -2,9 +2,8 @@
 // 1. The panic() boilerplate below allows use of no_std without wasm-bindgen
 //    and wasm-pack.
 // 2. Using #[no_mangle] on public functions is necessary for linking.
-// 3. Using #[no_mangle] on other functions reduces binary size and helps with
-//    disassembly and step tracing in browser dev tools. But, name collisions
-//    can cause SIGSEGV. Be careful with common names like 'write'.
+// 3. Using #[no_mangle] on other functions can help with disassembly and
+//    tracing using browser developer console tools.
 
 #[link(wasm_import_module = "js")]
 extern "C" {
@@ -23,14 +22,14 @@ pub fn panic(_panic_info: &PanicInfo) -> ! {
 
 // Export location & size of IPC message buffers in VM shared memory
 #[no_mangle]
-pub unsafe extern "C" fn wasm_inbox_ptr() -> *const u8 {
+pub unsafe extern "C" fn wasm_query_buf_ptr() -> *const u8 {
     super::ipc_mem::IN.as_ptr()
 }
 #[no_mangle]
-pub unsafe extern "C" fn wasm_outbox_ptr() -> *const u8 {
+pub unsafe extern "C" fn wasm_reply_buf_ptr() -> *const u8 {
     super::ipc_mem::OUT.as_ptr()
 }
 #[no_mangle]
-pub unsafe extern "C" fn wasm_mailbox_size() -> usize {
+pub unsafe extern "C" fn wasm_buffer_size() -> usize {
     super::ipc_mem::BUF_SIZE
 }

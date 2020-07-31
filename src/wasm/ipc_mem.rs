@@ -42,3 +42,13 @@ pub fn write(message: &str) {
 pub fn position() -> usize {
     unsafe { OUT_POS }
 }
+
+// Return string slice of OUT buffer contents.
+pub fn out_to_s() -> &'static str {
+    unsafe {
+        match core::str::from_utf8(&OUT[0..OUT_POS]) {
+            Ok(s) => &s,
+            Err(_) => &"", // TODO: handle mal-formed utf8 strings better
+        }
+    }
+}

@@ -1,26 +1,5 @@
 // ime-engine CLI demo
 use ime_engine;
-use ime_engine::wasm::ipc_mem;
-
-// Send query string to ime-engine.
-// Returns: reply string
-fn query(qry: &str) -> &str {
-    // Encode UTF-8 bytes to inbox buffer
-    let mut i: usize = 0;
-    unsafe {
-        for b in qry.bytes() {
-            if i < ipc_mem::BUF_SIZE {
-                ipc_mem::IN[i] = b;
-                i += 1;
-            }
-        }
-    }
-    // Run query
-    let query_len = i;
-    let reply_len = ime_engine::exchange_messages(query_len);
-    // Decode reply string as UTF-8 byts from outbox
-    unsafe { core::str::from_utf8(&ipc_mem::OUT[0..reply_len]).unwrap() }
-}
 
 // Minimal example of using ime-engine as library with std and CLI
 fn main() {
@@ -30,7 +9,12 @@ fn main() {
         &"woxiang he guozhi",
         &"woxianheguozhi11",
     ];
+    // Make a stack allocated string buffer with the Writer trait
+    // that ime_engine::query() expects
+    let mut sink = ime_engine::BufWriter::new();
+    // Run the queries
     for q in queries.iter() {
-        println!("\n{}\n{}", q, query(q));
+        println!("\n{}\n{}", q, ime_engine::query(q, &mut sink));
+        sink.rewind();
     }
 }

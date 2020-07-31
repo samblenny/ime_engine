@@ -133,21 +133,19 @@ pub mod lex {
         // Possible surprising behavior:
         // - Value of CiOpenChoice depends on lookahead for MaybeChoice
         // - MaybeChoice gets consumed (skipped) if used to resolve choice
-        pub fn render_and_write(&mut self) {
+        pub fn render_and_write(&mut self, sink: &mut impl super::Writer) {
             let mut current = 0;
             let mut utf8_buf = [0u8; 4];
             while current < self.count {
                 match self.queue[current] {
-                    Token::CiOne(ciyu_i) => {
-                        crate::ipc_mem::write(&crate::autogen_hsk::CIYU[ciyu_i])
-                    }
+                    Token::CiOne(ciyu_i) => sink.write(&crate::autogen_hsk::CIYU[ciyu_i]),
                     Token::CiOpenChoice(ciyu_i) => {
                         let ciyu = &crate::autogen_hsk::CIYU[ciyu_i];
                         // Look ahead for choice pick
                         let mut choice_resolved = false;
                         for i in current..self.count {
                             if let Token::MaybeChoice(tk) = self.queue[i] {
-                                match crate::expand_choice_and_write(ciyu, tk) {
+                                match crate::expand_choice_and_write(ciyu, tk, sink) {
                                     crate::ExpandChoiceResult::WasChoice => {
                                         self.queue[i] = Token::Skip;
                                         choice_resolved = true;
@@ -159,12 +157,12 @@ pub mod lex {
                         }
                         if !choice_resolved {
                             // TODO: use enum variant instead of '0' to indicate no MaybeChoice found
-                            let _ = crate::expand_choice_and_write(ciyu, '0');
+                            let _ = crate::expand_choice_and_write(ciyu, '0', sink);
                         }
                     }
                     // Space or number (pass through since not consumed by a CiOpenChoice)
-                    Token::MaybeChoice(tk) => crate::ipc_mem::write(tk.encode_utf8(&mut utf8_buf)),
-                    Token::Other(tk) => crate::ipc_mem::write(tk.encode_utf8(&mut utf8_buf)),
+                    Token::MaybeChoice(tk) => sink.write(tk.encode_utf8(&mut utf8_buf)),
+                    Token::Other(tk) => sink.write(tk.encode_utf8(&mut utf8_buf)),
                     Token::Skip => {}
                 }
                 current += 1;
@@ -198,12 +196,16 @@ enum ExpandChoiceResult {
     WasChoice,
     WasNotChoice,
 }
-fn expand_choice_and_write(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult {
+fn expand_choice_and_write(
+    ciyu: &str,
+    maybe_choice: char,
+    sink: &mut impl Writer,
+) -> ExpandChoiceResult {
     let n = ciyu.split("\t").count();
     if n == 1 {
         // If this ever happens, there's a bug. Log and recover.
         trace(901);
-        ipc_mem::write(ciyu);
+        sink.write(ciyu);
         return ExpandChoiceResult::WasNotChoice;
     }
     // Try to pick a choice (return immediately if number out of range)
@@ -223,18 +225,18 @@ fn expand_choice_and_write(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult
     if pick > 0 {
         for (i, choice) in ciyu.split("\t").enumerate() {
             if i + 1 == pick {
-                ipc_mem::write(choice);
+                sink.write(choice);
                 return ExpandChoiceResult::WasChoice;
             }
         }
-        // Out of range for possible choice, so return without ipc_mem::write() to
+        // Out of range for possible choice, so return without sink.write() to
         // prevent duplicate choice prompting
         return ExpandChoiceResult::WasNotChoice;
     }
     // Show all choices
-    ipc_mem::write(&" (");
+    sink.write(&" (");
     for (i, choice) in ciyu.split("\t").enumerate() {
-        ipc_mem::write(match i {
+        sink.write(match i {
             0 => &"1",
             1 => &"2",
             2 => &"3",
@@ -245,12 +247,12 @@ fn expand_choice_and_write(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult
             7 => &"8",
             _ => &"9",
         });
-        ipc_mem::write(choice);
+        sink.write(choice);
         if i + 1 < n {
-            ipc_mem::write(&" ");
+            sink.write(&" ");
         }
     }
-    ipc_mem::write(&") ");
+    sink.write(&") ");
     return ExpandChoiceResult::WasNotChoice;
 }
 
@@ -302,29 +304,94 @@ fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: u
 
 // Look up 词语 for search query (pinyin keys are ASCII, but inbox is UTF-8).
 // Side-effect: copies utf8 result string to IPC out buffer.
-#[no_mangle]
-fn look_up(query_bytes: &str) {
+fn look_up(query_bytes: &str, sink: &mut impl Writer) {
     let query = Utf8Str::new(query_bytes);
     let mut queue = lex::TokenQueue::new();
     let start = 0;
     let end = query.char_count;
     search(&query, &mut queue, start, end);
-    queue.render_and_write();
+    queue.render_and_write(sink);
+}
+
+// Writer decouples query response formatting from shared memory IPC stuff.
+pub trait Writer {
+    fn write(&mut self, message: &str);
+    fn to_s(&self) -> &str;
+}
+
+// IPCWriter is a Writer for UTF-8 bytes backed by static IPC shared memory.
+struct IPCWriter {}
+impl Writer for IPCWriter {
+    fn write(&mut self, message: &str) {
+        ipc_mem::write(message);
+    }
+    fn to_s(&self) -> &str {
+        ipc_mem::out_to_s()
+    }
+}
+
+// BufWriter is a Writer for string slices backed by stack allocated [u8].
+pub struct BufWriter {
+    buf: [u8; ipc_mem::BUF_SIZE],
+    buf_pos: usize,
+}
+impl BufWriter {
+    // Return empty buffer ready for use.
+    pub fn new() -> BufWriter {
+        BufWriter {
+            buf: [0; ipc_mem::BUF_SIZE],
+            buf_pos: 0,
+        }
+    }
+    // Truncate buffer position back to 0 bytes.
+    pub fn rewind(&mut self) {
+        self.buf_pos = 0;
+    }
+}
+impl Writer for BufWriter {
+    // Append message to buffer
+    fn write(&mut self, message: &str) {
+        for b in message.bytes() {
+            // TODO: better strategy for overflow (vs. silently drop extra)
+            if self.buf_pos < self.buf.len() {
+                self.buf[self.buf_pos] = b;
+                self.buf_pos += 1;
+            }
+        }
+    }
+    // Return string slice of buffer contents.
+    fn to_s(&self) -> &str {
+        match core::str::from_utf8(&self.buf[0..self.buf_pos]) {
+            Ok(s) => &s,
+            Err(_) => &"", // TODO: handle mal-formed utf8 strings better
+        }
+    }
+}
+
+// Look up query, write results to sink.
+// This is for calling as a library function from rust.
+// Returns: string slice of results backed by sink.
+pub fn query<'a>(qry: &str, sink: &'a mut impl Writer) -> &'a str {
+    look_up(&qry, sink);
+    sink.to_s()
 }
 
 // Receive query message, search, write results to IPC out buffer.
+// This is for calling from Javascript with WebAssembly.
 // Returns: number of bytes written to IPC out buffer.
 #[no_mangle]
-pub extern "C" fn exchange_messages(n: usize) -> usize {
+pub extern "C" fn query_shared_mem_ipc(n: usize) -> usize {
+    let mut ipc_writer = IPCWriter {};
     let qry = ipc_mem::get_query(n);
     ipc_mem::rewind();
-    look_up(&qry);
+    look_up(&qry, &mut ipc_writer);
     ipc_mem::position()
 }
 
 #[cfg(test)]
 mod tests {
     use super::wasm::ipc_mem;
+    use super::BufWriter;
 
     // Send query string to ime-engine; THIS IS NOT THREAD SAFE.
     // Returns: reply string.
@@ -340,10 +407,17 @@ mod tests {
             }
         }
         // Run query
-        let query_len = i;
-        let reply_len = crate::exchange_messages(query_len);
+        let ipc_query_len = i;
+        let _ = crate::query_shared_mem_ipc(ipc_query_len);
         // Decode reply string as UTF-8 byts from outbox
-        unsafe { core::str::from_utf8(&ipc_mem::OUT[0..reply_len]).unwrap() }
+        let ipc_reply = ipc_mem::out_to_s();
+        // Run the same query using the rust string slice function
+        let mut sink = BufWriter::new();
+        let reply = super::query(&qry, &mut sink);
+        // Make sure the reply matches the ipc version
+        assert_eq!(reply, ipc_reply);
+        // Cannot return reply here since is owned by this function
+        ipc_reply
     }
 
     #[test]
