@@ -1,12 +1,13 @@
 TARGET=--target wasm32-unknown-unknown
 PANIC=-C panic=abort
-OPT=-C opt-level=s
+# 'link-args=-s' removes 10KB+ of debug symbols from linked core::*
+OPT=-C opt-level=s -C link-args=-s
 CRATE_TYPE=--crate-type=cdylib
 DEBUG=-C debuginfo=0 -C debug-assertions=off
 LINK_OPT=-C codegen-units=1 -C lto=fat
 WASM_ARGS=$(TARGET) $(PANIC) $(OPT) $(CRATE_TYPE) $(DEBUG) $(LINK_OPT)
 WASM_OUTPUT=wasm-demo/ime-engine.wasm
-RUST_SRC=src/lib.rs src/autogen_hsk.rs src/main.rs
+RUST_SRC=src/*.rs
 
 default: $(RUST_SRC)
 	cargo build
