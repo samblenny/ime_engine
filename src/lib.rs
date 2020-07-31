@@ -301,10 +301,10 @@ fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: u
 }
 
 // Look up 词语 for search query (pinyin keys are ASCII, but inbox is UTF-8).
-// Side-effect: copies utf8 result string to outbox buffer.
+// Side-effect: copies utf8 result string to IPC out buffer.
 #[no_mangle]
-fn look_up(inbox_query: &str) {
-    let query = Utf8Str::new(inbox_query);
+fn look_up(query_bytes: &str) {
+    let query = Utf8Str::new(query_bytes);
     let mut queue = lex::TokenQueue::new();
     let start = 0;
     let end = query.char_count;
@@ -312,22 +312,14 @@ fn look_up(inbox_query: &str) {
     queue.render_and_write();
 }
 
-// Receive query message, search, put results in outbox.
+// Receive query message, search, write results to IPC out buffer.
+// Returns: number of bytes written to IPC out buffer.
 #[no_mangle]
 pub extern "C" fn exchange_messages(n: usize) -> usize {
-    let inbox_query: &str;
-    unsafe {
-        inbox_query = match core::str::from_utf8(&ipc_mem::IN[0..n]) {
-            Ok(s) => &s,
-            Err(_) => &"", // TODO: handle mal-formed utf8 strings better
-        };
-    }
-    // TODO: better way to track bytes count for the outbox buffer
+    let qry = ipc_mem::get_query(n);
     ipc_mem::rewind();
-    look_up(&inbox_query);
-    unsafe {
-        return ipc_mem::OUT_POS;
-    }
+    look_up(&qry);
+    ipc_mem::position()
 }
 
 #[cfg(test)]
@@ -335,7 +327,7 @@ mod tests {
     use super::wasm::ipc_mem;
 
     // Send query string to ime-engine; THIS IS NOT THREAD SAFE.
-    // Returns: reply string
+    // Returns: reply string.
     fn query(qry: &str) -> &str {
         // Encode UTF-8 bytes to inbox buffer
         let mut i: usize = 0;

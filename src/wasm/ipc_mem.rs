@@ -6,15 +6,25 @@ pub static mut IN: [u8; BUF_SIZE] = [0; BUF_SIZE];
 pub static mut OUT: [u8; BUF_SIZE] = [0; BUF_SIZE];
 pub static mut OUT_POS: usize = 0;
 
-// Reset the out buffer position to zero.
+// Decode the UTF-8 query string from IN buffer.
+pub fn get_query(n: usize) -> &'static str {
+    unsafe {
+        match core::str::from_utf8(&IN[0..n]) {
+            Ok(s) => &s,
+            Err(_) => &"", // TODO: handle mal-formed utf8 strings better
+        }
+    }
+}
+
+// Reset the OUT buffer position to zero.
 pub fn rewind() {
     unsafe {
         OUT_POS = 0;
     }
 }
 
-// Append copy of message into out buffer.
-// Side-effect: Update out-buffer and out-buffer byte count (position).
+// Append copy of message into OUT buffer, starting at OUT_POS.
+// Side-effect: Update OUT buffer and OUT buffer byte count (OUT_POS, position).
 // CAUTION: no_mangle here causes SIGSEGV (maybe collision on name "write"?).
 pub fn write(message: &str) {
     for b in message.bytes() {
@@ -26,4 +36,9 @@ pub fn write(message: &str) {
             }
         }
     }
+}
+
+// Use this to get the number of bytes that write() put in the OUT buffer
+pub fn position() -> usize {
+    unsafe { OUT_POS }
 }
