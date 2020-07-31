@@ -1,9 +1,11 @@
+use crate::constants;
+
 // Shared memory buffers for interprocess communication between
 // WebAssembly VM host (javscript) and WASM module (ime-engine)
 // These ARE NOT thread safe! Be careful!
 pub const BUF_SIZE: usize = 150;
-pub static mut IN: [u8; BUF_SIZE] = [0; BUF_SIZE];
-pub static mut OUT: [u8; BUF_SIZE] = [0; BUF_SIZE];
+pub static mut IN: [u8; constants::BUF_SIZE] = [0; constants::BUF_SIZE];
+pub static mut OUT: [u8; constants::BUF_SIZE] = [0; constants::BUF_SIZE];
 pub static mut OUT_POS: usize = 0;
 
 // Decode the UTF-8 query string from IN buffer.
