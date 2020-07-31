@@ -8,8 +8,8 @@ fn query(qry: &str) -> &str {
     let mut i: usize = 0;
     unsafe {
         for b in qry.bytes() {
-            if i < ime_engine::MAILBOX_SIZE {
-                ime_engine::WASM_INBOX[i] = b;
+            if i < ime_engine::WASM_IPC_BUF_SIZE {
+                ime_engine::WASM_IPC_IN[i] = b;
                 i += 1;
             }
         }
@@ -18,7 +18,7 @@ fn query(qry: &str) -> &str {
     let query_len = i;
     let reply_len = ime_engine::exchange_messages(query_len);
     // Decode reply string as UTF-8 byts from outbox
-    unsafe { core::str::from_utf8(&ime_engine::WASM_OUTBOX[0..reply_len]).unwrap() }
+    unsafe { core::str::from_utf8(&ime_engine::WASM_IPC_OUT[0..reply_len]).unwrap() }
 }
 
 // Minimal example of using ime-engine as library with std and CLI

@@ -6,48 +6,59 @@
 // 3. Using #[no_mangle] on other functions reduces binary size and helps with
 //    disassembly and step tracing in browser dev tools.
 #[cfg(target_arch = "wasm32")]
-#[link(wasm_import_module = "js")]
-extern "C" {
+mod wasm32_no_std {
+    #[link(wasm_import_module = "js")]
+    extern "C" {
+        fn js_warn_wasm_panic();
+        pub fn js_log_trace(code: i32);
+    }
+    use core::panic::PanicInfo;
+    #[panic_handler]
     #[no_mangle]
-    fn js_warn_wasm_panic();
-    fn js_log_trace(code: i32);
+    pub fn panic(_panic_info: &PanicInfo) -> ! {
+        unsafe {
+            js_warn_wasm_panic();
+        }
+        loop {}
+    }
 }
+#[cfg(target_arch = "wasm32")]
+use wasm32_no_std::*;
 #[cfg(not(target_arch = "wasm32"))]
 unsafe fn js_log_trace(_: i32) {}
-#[cfg(target_arch = "wasm32")]
-use core::panic::PanicInfo;
-#[cfg(target_arch = "wasm32")]
-#[panic_handler]
-fn panic(_panic_info: &PanicInfo) -> ! {
-    unsafe {
-        js_warn_wasm_panic();
-    }
-    loop {}
-}
 
 // Include the static arrays generated from vocab list files
 mod autogen_hsk;
 // Index type for phrases listed in autogen_hsk::CIYU array
 type CiyuIndex = usize;
 
-// Shared mailbox buffers for copying messages in & out of the VM
-pub const MAILBOX_SIZE: usize = 150;
-pub static mut WASM_INBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
-pub static mut WASM_OUTBOX: [u8; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
-static mut OUTBOX_BYTES: usize = 0;
+// Shared memory buffers for interprocess communication between
+// WebAssembly VM host (javscript) and WASM module (ime-engine)
+// These ARE NOT thread safe! Be careful!
+pub const WASM_IPC_BUF_SIZE: usize = 150;
+pub static mut WASM_IPC_IN: [u8; WASM_IPC_BUF_SIZE] = [0; WASM_IPC_BUF_SIZE];
+pub static mut WASM_IPC_OUT: [u8; WASM_IPC_BUF_SIZE] = [0; WASM_IPC_BUF_SIZE];
+static mut WASM_IPC_OUT_POS: usize = 0;
 
-// Append copy of message into outbox buffer.
-// Side-effect: Update outbox buffer and byte count.
+// Append copy of message into out buffer.
+// Side-effect: Update out buffer and out buffer byte count (position).
 #[no_mangle]
-fn send(message: &str) {
+pub fn wasm_ipc_write(message: &str) {
     unsafe {
         for b in message.bytes() {
             // TODO: better strategy for overflow (vs. silently drop extra)
-            if OUTBOX_BYTES < MAILBOX_SIZE {
-                WASM_OUTBOX[OUTBOX_BYTES] = b;
-                OUTBOX_BYTES += 1;
+            if WASM_IPC_OUT_POS < WASM_IPC_BUF_SIZE {
+                WASM_IPC_OUT[WASM_IPC_OUT_POS] = b;
+                WASM_IPC_OUT_POS += 1;
             }
         }
+    }
+}
+
+// Reset the out buffer position to zero.
+fn wasm_ipc_rewind() {
+    unsafe {
+        WASM_IPC_OUT_POS = 0;
     }
 }
 
@@ -65,15 +76,15 @@ fn trace(trace_code: i32) {
 // Export location & size of utf8 mailbox buffers in VM shared memory
 #[no_mangle]
 pub unsafe extern "C" fn wasm_inbox_ptr() -> *const u8 {
-    WASM_INBOX.as_ptr()
+    WASM_IPC_IN.as_ptr()
 }
 #[no_mangle]
 pub unsafe extern "C" fn wasm_outbox_ptr() -> *const u8 {
-    WASM_OUTBOX.as_ptr()
+    WASM_IPC_OUT.as_ptr()
 }
 #[no_mangle]
 pub unsafe extern "C" fn wasm_mailbox_size() -> usize {
-    MAILBOX_SIZE
+    WASM_IPC_BUF_SIZE
 }
 
 #[no_mangle]
@@ -90,8 +101,8 @@ fn min(a: usize, b: usize) -> usize {
 // not aligned on encoded Unicode character boundaries.
 struct Utf8Str<'a> {
     str_slice: &'a str,
-    char_start_list: [usize; MAILBOX_SIZE],
-    char_end_list: [usize; MAILBOX_SIZE],
+    char_start_list: [usize; WASM_IPC_BUF_SIZE],
+    char_end_list: [usize; WASM_IPC_BUF_SIZE],
     char_count: usize,
 }
 impl<'a> Utf8Str<'a> {
@@ -99,15 +110,15 @@ impl<'a> Utf8Str<'a> {
     pub fn new(str_slice: &'a str) -> Utf8Str {
         // Find start (inclusive lower bound) and end (exclusive upper bound) byte
         // index of each UTF-8 character in string slice
-        let mut char_start_list: [usize; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
-        let mut char_end_list: [usize; MAILBOX_SIZE] = [0; MAILBOX_SIZE];
+        let mut char_start_list: [usize; WASM_IPC_BUF_SIZE] = [0; WASM_IPC_BUF_SIZE];
+        let mut char_end_list: [usize; WASM_IPC_BUF_SIZE] = [0; WASM_IPC_BUF_SIZE];
         let mut char_count = 0;
         for i in 1..str_slice.len() + 1 {
             if str_slice.is_char_boundary(i) {
-                if char_count + 1 < MAILBOX_SIZE {
+                if char_count + 1 < WASM_IPC_BUF_SIZE {
                     char_start_list[char_count + 1] = i;
                 }
-                if char_count < MAILBOX_SIZE {
+                if char_count < WASM_IPC_BUF_SIZE {
                     char_end_list[char_count] = i;
                     char_count += 1;
                 }
@@ -127,7 +138,7 @@ impl<'a> Utf8Str<'a> {
     #[no_mangle]
     pub fn char_slice(&self, start: usize, end: usize) -> Option<&str> {
         // Subtle point: implicit test for end > 0
-        if start < end && end <= MAILBOX_SIZE {
+        if start < end && end <= WASM_IPC_BUF_SIZE {
             let start_b = self.char_start_list[start];
             // Must not allow end==0 here. For usize, (0 - 1) will panic.
             let end_b = self.char_end_list[end - 1];
@@ -142,7 +153,7 @@ impl<'a> Utf8Str<'a> {
 // TokenQueue is no_std, stack-only substitute for Vec<Token>. If TokenQueue
 // were Vec<Token>, it would require heap allocation and linking std.
 pub mod lex {
-    const TOKEN_QUEUE_SIZE: usize = crate::MAILBOX_SIZE;
+    const TOKEN_QUEUE_SIZE: usize = crate::WASM_IPC_BUF_SIZE;
     // Holds one Token.
     #[derive(Copy, Clone)]
     pub enum Token {
@@ -181,19 +192,21 @@ pub mod lex {
         // Possible surprising behavior:
         // - Value of CiOpenChoice depends on lookahead for MaybeChoice
         // - MaybeChoice gets consumed (skipped) if used to resolve choice
-        pub fn render_and_send(&mut self) {
+        pub fn render_and_write(&mut self) {
             let mut current = 0;
             let mut utf8_buf = [0u8; 4];
             while current < self.count {
                 match self.queue[current] {
-                    Token::CiOne(ciyu_i) => crate::send(&crate::autogen_hsk::CIYU[ciyu_i]),
+                    Token::CiOne(ciyu_i) => {
+                        crate::wasm_ipc_write(&crate::autogen_hsk::CIYU[ciyu_i])
+                    }
                     Token::CiOpenChoice(ciyu_i) => {
                         let ciyu = &crate::autogen_hsk::CIYU[ciyu_i];
                         // Look ahead for choice pick
                         let mut choice_resolved = false;
                         for i in current..self.count {
                             if let Token::MaybeChoice(tk) = self.queue[i] {
-                                match crate::expand_choice_and_send(ciyu, tk) {
+                                match crate::expand_choice_and_write(ciyu, tk) {
                                     crate::ExpandChoiceResult::WasChoice => {
                                         self.queue[i] = Token::Skip;
                                         choice_resolved = true;
@@ -205,17 +218,17 @@ pub mod lex {
                         }
                         if !choice_resolved {
                             // TODO: use enum variant instead of '0' to indicate no MaybeChoice found
-                            let _ = crate::expand_choice_and_send(ciyu, '0');
+                            let _ = crate::expand_choice_and_write(ciyu, '0');
                         }
                     }
                     // Space or number (pass through since not consumed by a CiOpenChoice)
-                    Token::MaybeChoice(tk) => crate::send(tk.encode_utf8(&mut utf8_buf)),
-                    Token::Other(tk) => crate::send(tk.encode_utf8(&mut utf8_buf)),
+                    Token::MaybeChoice(tk) => crate::wasm_ipc_write(tk.encode_utf8(&mut utf8_buf)),
+                    Token::Other(tk) => crate::wasm_ipc_write(tk.encode_utf8(&mut utf8_buf)),
                     Token::Skip => {}
                 }
                 current += 1;
             } // end while
-        } // end render_and_send()
+        } // end render_and_write()
     } // end impl TokenQueue
 } // end lex
 
@@ -244,12 +257,12 @@ enum ExpandChoiceResult {
     WasChoice,
     WasNotChoice,
 }
-fn expand_choice_and_send(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult {
+fn expand_choice_and_write(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult {
     let n = ciyu.split("\t").count();
     if n == 1 {
         // If this ever happens, there's a bug. Log and recover.
         trace(901);
-        send(ciyu);
+        wasm_ipc_write(ciyu);
         return ExpandChoiceResult::WasNotChoice;
     }
     // Try to pick a choice (return immediately if number out of range)
@@ -269,18 +282,18 @@ fn expand_choice_and_send(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult 
     if pick > 0 {
         for (i, choice) in ciyu.split("\t").enumerate() {
             if i + 1 == pick {
-                send(choice);
+                wasm_ipc_write(choice);
                 return ExpandChoiceResult::WasChoice;
             }
         }
-        // Out of range for possible choice, so return without send() to
+        // Out of range for possible choice, so return without wasm_ipc_write() to
         // prevent duplicate choice prompting
         return ExpandChoiceResult::WasNotChoice;
     }
     // Show all choices
-    send(&" (");
+    wasm_ipc_write(&" (");
     for (i, choice) in ciyu.split("\t").enumerate() {
-        send(match i {
+        wasm_ipc_write(match i {
             0 => &"1",
             1 => &"2",
             2 => &"3",
@@ -291,12 +304,12 @@ fn expand_choice_and_send(ciyu: &str, maybe_choice: char) -> ExpandChoiceResult 
             7 => &"8",
             _ => &"9",
         });
-        send(choice);
+        wasm_ipc_write(choice);
         if i + 1 < n {
-            send(&" ");
+            wasm_ipc_write(&" ");
         }
     }
-    send(&") ");
+    wasm_ipc_write(&") ");
     return ExpandChoiceResult::WasNotChoice;
 }
 
@@ -355,7 +368,7 @@ fn look_up(inbox_query: &str) {
     let start = 0;
     let end = query.char_count;
     search(&query, &mut queue, start, end);
-    queue.render_and_send();
+    queue.render_and_write();
 }
 
 // Receive query message, search, put results in outbox.
@@ -363,18 +376,16 @@ fn look_up(inbox_query: &str) {
 pub extern "C" fn exchange_messages(n: usize) -> usize {
     let inbox_query: &str;
     unsafe {
-        inbox_query = match core::str::from_utf8(&WASM_INBOX[0..n]) {
+        inbox_query = match core::str::from_utf8(&WASM_IPC_IN[0..n]) {
             Ok(s) => &s,
             Err(_) => &"", // TODO: handle mal-formed utf8 strings better
         };
     }
     // TODO: better way to track bytes count for the outbox buffer
-    unsafe {
-        OUTBOX_BYTES = 0;
-    }
+    wasm_ipc_rewind();
     look_up(&inbox_query);
     unsafe {
-        return OUTBOX_BYTES;
+        return WASM_IPC_OUT_POS;
     }
 }
 
@@ -387,8 +398,8 @@ mod tests {
         let mut i: usize = 0;
         unsafe {
             for b in qry.bytes() {
-                if i < crate::MAILBOX_SIZE {
-                    crate::WASM_INBOX[i] = b;
+                if i < crate::WASM_IPC_BUF_SIZE {
+                    crate::WASM_IPC_IN[i] = b;
                     i += 1;
                 }
             }
@@ -397,7 +408,7 @@ mod tests {
         let query_len = i;
         let reply_len = crate::exchange_messages(query_len);
         // Decode reply string as UTF-8 byts from outbox
-        unsafe { core::str::from_utf8(&crate::WASM_OUTBOX[0..reply_len]).unwrap() }
+        unsafe { core::str::from_utf8(&crate::WASM_IPC_OUT[0..reply_len]).unwrap() }
     }
 
     #[test]
@@ -407,7 +418,7 @@ mod tests {
 
     #[test]
     fn max_query() {
-        let buf_max = ['A' as u8; crate::MAILBOX_SIZE];
+        let buf_max = ['A' as u8; crate::WASM_IPC_BUF_SIZE];
         let qry_max = core::str::from_utf8(&buf_max).unwrap();
         // This should be passed through unchanged as ASCII
         assert_eq!(qry_max, query(qry_max));
@@ -415,9 +426,9 @@ mod tests {
 
     #[test]
     fn max_query_plus_1_truncate() {
-        let buf_max = ['A' as u8; crate::MAILBOX_SIZE];
+        let buf_max = ['A' as u8; crate::WASM_IPC_BUF_SIZE];
         let qry_max = core::str::from_utf8(&buf_max).unwrap();
-        let buf_1_too_big = ['A' as u8; crate::MAILBOX_SIZE + 1];
+        let buf_1_too_big = ['A' as u8; crate::WASM_IPC_BUF_SIZE + 1];
         let qry_1_too_big = core::str::from_utf8(&buf_1_too_big).unwrap();
         // This should truncate the query
         assert_eq!(qry_max, query(qry_1_too_big));
