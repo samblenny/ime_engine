@@ -469,4 +469,12 @@ mod tests {
         assert_eq!(query(&"xiang he "), "想喝");
         assert_eq!(query(&"xianghe 2"), "想和");
     }
+
+    #[test]
+    fn query_chars_not_matched_should_pass_through() {
+        assert_eq!(query(&"🐇✨"), "🐇✨");
+        assert_eq!(query(&"baiSEde🐇✨11"), "白SE的🐇✨");
+        assert_eq!(query(&"RABBIT SPARKLES 11"), "RABBIT SPARKLES 11");
+        assert_eq!(query(&"XIANGHE"), "XIANGHE");
+    }
 }
