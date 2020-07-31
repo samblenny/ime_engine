@@ -1,6 +1,6 @@
 // ime-engine CLI demo
 use ime_engine;
-use ime_engine::wasm_ipc;
+use ime_engine::wasm::ipc_mem;
 
 // Send query string to ime-engine.
 // Returns: reply string
@@ -9,8 +9,8 @@ fn query(qry: &str) -> &str {
     let mut i: usize = 0;
     unsafe {
         for b in qry.bytes() {
-            if i < wasm_ipc::BUF_SIZE {
-                wasm_ipc::IN[i] = b;
+            if i < ipc_mem::BUF_SIZE {
+                ipc_mem::IN[i] = b;
                 i += 1;
             }
         }
@@ -19,7 +19,7 @@ fn query(qry: &str) -> &str {
     let query_len = i;
     let reply_len = ime_engine::exchange_messages(query_len);
     // Decode reply string as UTF-8 byts from outbox
-    unsafe { core::str::from_utf8(&wasm_ipc::OUT[0..reply_len]).unwrap() }
+    unsafe { core::str::from_utf8(&ipc_mem::OUT[0..reply_len]).unwrap() }
 }
 
 // Minimal example of using ime-engine as library with std and CLI
