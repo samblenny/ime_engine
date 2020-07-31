@@ -56,6 +56,7 @@ if detected != TR_FROM
 end
 abort "Error: Check for TR_FROM/TR_TO length mismatch" if TR_FROM.size != TR_TO.size
 
+
 # Merge ciyu values for duplicate pinyin search keys
 # example: ["he", "he"] and ["喝", "和"] get turned into ["he"] and ["喝\t和"]
 # Notes (subtle ruby semantics):
@@ -67,6 +68,7 @@ abort "Error: Check for TR_FROM/TR_TO length mismatch" if TR_FROM.size != TR_TO.
 #    grep on the .tsv files to check for duplicate entries.
 merged_ciyu = []
 merged_pinyin = []
+pinyin_ciyu_test_data = []
 ciyu_choice_max = 1;
 first_index_of = {}
 pinyin_size_max = 0;
@@ -74,6 +76,9 @@ i = 0
 for wf in WORD_FILES
   for ciyu, pinyin in read_tsv(wf)
     normalized_pinyin = normalize(pinyin)
+    # First, save unprocessed (pinyin, 词语) pairs for generating rust test data
+    pinyin_ciyu_test_data << [normalized_pinyin, ciyu]
+    # Proceed with merging homophones for generating rust query lookup data
     if first_index_of[normalized_pinyin]
       if merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
         # If you see this warning, use grep to check for duplicate entries.
@@ -130,6 +135,14 @@ File.open(RUST_FILE, "w") { |rf|
 
     pub static PINYIN: &[&'static str] = &[
     <% merged_pinyin.each do |p| %>    &"<%= p %>",
+    <% end %>];
+
+    // Tuples are (normalized_pinyin, 词语) from early in vocab file code
+    // generation precompute pipeline. These correspond closely to lines of
+    // vocab .tsv files prior to any sorting or merging of duplicates.
+    #[cfg(test)]
+    pub static PINYIN_CIYU_TEST_DATA: &[(&'static str, &'static str)] = &[
+    <% pinyin_ciyu_test_data.each do |np, cy| %>    (&"<%= np %>", &"<%= cy %>"),
     <% end %>];
     RUST
   rf.puts ERB.new(TEMPLATE).result(binding)

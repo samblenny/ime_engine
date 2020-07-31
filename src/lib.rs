@@ -433,4 +433,12 @@ mod tests {
         assert!(query(&"zhang").contains("长"));
         assert!(query(&"chang").contains("长"));
     }
+
+    #[test]
+    fn query_all_pinyin_search_keys_verify_ciyu() {
+        let test_data = &crate::autogen_hsk::PINYIN_CIYU_TEST_DATA;
+        for (normalized_pinyin, ciyu) in test_data.iter() {
+            assert!(query(normalized_pinyin).contains(ciyu));
+        }
+    }
 }
