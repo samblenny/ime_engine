@@ -68,8 +68,7 @@ function clearLog() {
 function enableChatMode() {
     // Update the suggestion box for edit event
     compose.addEventListener('input', (e) => {
-        // TODO: better fix (vs toLowerCase) for when iOS auto-capitalizes input text
-        const jsToWasm = compose.value.toLowerCase();
+        const jsToWasm = compose.value;
         if (['/help', '/about', '/clear'].includes(jsToWasm)) {
             suggest.textContent = "[waiting for return or enter]";
         } else {
@@ -82,8 +81,7 @@ function enableChatMode() {
     compose.addEventListener('keydown', (e) => {
         if (!e.repeat && e.key == "Enter" && compose.value.trim() != "") {
             suggest.textContent = "";
-            // TODO: better fix (vs toLowerCase) for when iOS auto-capitalizes input text
-            const jsToWasm = compose.value.toLowerCase();
+            const jsToWasm = compose.value;
             const wasmToJs = syncMessages(jsToWasm);
             const rawInput = compose.value;
             compose.value = "";
