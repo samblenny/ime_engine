@@ -140,7 +140,20 @@ pub mod lex {
             let mut utf8_buf = [0u8; 4];
             while current < self.count {
                 match self.queue[current] {
-                    Token::CiOne(ciyu_i) => sink.write(&crate::autogen_hsk::CIYU[ciyu_i]),
+                    Token::CiOne(ciyu_i) => {
+                        sink.write(&crate::autogen_hsk::CIYU[ciyu_i]);
+                        // Look ahead for adjacent space that might be intended
+                        // to prevent this ciyu from getting matched as part
+                        // of the pinyin for another longer ciyu
+                        if current + 1 < self.count {
+                            if let Token::MaybeChoice(tk) = self.queue[current + 1] {
+                                // Consume the space
+                                if tk == ' ' {
+                                    self.queue[current + 1] = Token::Skip;
+                                }
+                            }
+                        }
+                    }
                     Token::CiOpenChoice(ciyu_i) => {
                         let ciyu = &crate::autogen_hsk::CIYU[ciyu_i];
                         // Look ahead for choice pick
@@ -524,5 +537,16 @@ mod tests {
         assert_eq!(constants::BUF_SIZE, out_len);
         assert_eq!(constants::BUF_SIZE, tq_len);
         assert_eq!(constants::BUF_SIZE, sink_buf_len);
+    }
+
+    #[test]
+    fn space_disambiguating_pinyin_prefix_is_consumed() {
+        assert_eq!("按饿", query(&"ane"));
+        assert_eq!("啊呢", query(&"a ne"));
+        assert_eq!("按饿", query(&"an e"));
+        assert_eq!("我想喝果汁", query(&"wo xiang he guozhi"));
+        assert_eq!("您饿", query(&"nine"));
+        assert_eq!("你呢", query(&"ni ne"));
+        assert_eq!("你呢", query(&"ni ne "));
     }
 }
