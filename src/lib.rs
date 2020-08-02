@@ -549,4 +549,12 @@ mod tests {
         assert_eq!("你呢", query(&"ni ne"));
         assert_eq!("你呢", query(&"ni ne "));
     }
+
+    // This might fail some day as consequence of vocab data entry. As long as
+    // this test continues to pass, using single digit choice picking protocol
+    // is okay. Fail means time for fancier algorithm to resolve choices.
+    #[test]
+    fn longest_choice_has_nine_or_less_options() {
+        assert!(crate::autogen_hsk::CIYU_CHOICE_MAX <= 9);
+    }
 }
