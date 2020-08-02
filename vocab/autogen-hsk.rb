@@ -72,6 +72,8 @@ pinyin_ciyu_test_data = []
 ciyu_choice_max = 1;
 first_index_of = {}
 pinyin_size_max = 0;
+pinyin_char_count = 0;
+pinyin_key_count = 0;
 i = 0
 for wf in WORD_FILES
   for ciyu, pinyin in read_tsv(wf)
@@ -101,6 +103,8 @@ for wf in WORD_FILES
       merged_pinyin[i] = normalized_pinyin
       first_index_of[normalized_pinyin] = i
       i += 1
+      pinyin_char_count += normalized_pinyin.size
+      pinyin_key_count += 1;
     end
     # Is this the longest pinyin phrase so far?
     pinyin_size_max = [pinyin_size_max, normalized_pinyin.size].max
@@ -110,6 +114,12 @@ end
 # Sort the merged vocab lists in pinyin order
 merged_pinyin, merged_ciyu = merged_pinyin.zip(merged_ciyu).sort.transpose
 
+# Print statistics
+avg_pinyin_key_len = Float(pinyin_char_count) / pinyin_key_count
+puts "\nUnique pinyin search keys: #{pinyin_key_count}"
+puts "Average characters per pinyin search key: #{avg_pinyin_key_len.round(1)}"
+
+# Ask about updating the Rust array source code
 puts "\nPreparing to generate rust source code..."
 print "This will overwrite #{RUST_FILE}\nDo you want to continue? [y/N] "
 abort "no changes made" if !["y", "Y"].include? gets.chomp
