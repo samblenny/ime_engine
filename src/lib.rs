@@ -131,7 +131,7 @@ pub mod lex {
             }
         }
         // Iterate through tokens, resolve choices, render to oubox.
-        // Side-effect: Send strings to outbox buffer.
+        // Side-effect: Send strings to Writer.
         // Possible surprising behavior:
         // - Value of CiOpenChoice depends on lookahead for MaybeChoice
         // - MaybeChoice gets consumed (skipped) if used to resolve choice
@@ -272,7 +272,7 @@ fn expand_choice_and_write(
 }
 
 // Search for 词语 matches in substrings of query.
-// Side-effect: Send results to outbox buffer.
+// Side-effect: Push tokens into queue.
 #[no_mangle]
 fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: usize) {
     while start < end {
@@ -425,7 +425,7 @@ mod tests {
         // Run query
         let ipc_query_len = i;
         let _ = crate::query_shared_mem_ipc(ipc_query_len);
-        // Decode reply string as UTF-8 byts from outbox
+        // Decode reply string as UTF-8 bytes from IPC shared mem OUT buffer
         let ipc_reply = ipc_mem::out_to_s();
         // Run the same query using the rust string slice function
         let mut sink = BufWriter::new();

@@ -1,7 +1,7 @@
 // Relative URL to ime-engine WASM module
 const wasmModule = "ime-engine.wasm";
 
-// Load ime-engine WASM module, bind shared memory for mailboxes, then invoke callback
+// Load ime-engine WASM module, bind shared memory for IPC buffers, then invoke callback
 export function loadIMEEngineWasm(callback) {
     var importObject = {
         js: { js_warn_wasm_panic: () =>
@@ -21,19 +21,19 @@ export function loadIMEEngineWasm(callback) {
     if ("instantiateStreaming" in WebAssembly) {
         // The new, more efficient way
         WebAssembly.instantiateStreaming(fetch(wasmModule), importObject)
-            .then(initMailboxBindings)
+            .then(initSharedMemBindings)
             .then(callback);
     } else {
         // Fallback for Safari
         fetch(wasmModule)
             .then(response => response.arrayBuffer())
             .then(bytes => WebAssembly.instantiate(bytes, importObject))
-            .then(initMailboxBindings)
+            .then(initSharedMemBindings)
             .then(callback);
     }
 }
 
-// Shared memory bindings for mailbox buffers for JS <--> WASM message passing
+// Shared memory bindings for IPC buffers for JS <--> WASM message passing
 var wasmShared;
 var wasmQueryBuf;
 var wasmReplyBuf;
@@ -41,8 +41,8 @@ var wasmBufferSize;
 var wasmQuerySharedMemIPC;
 var wasmInstanceReady = false;
 
-// Callback to initialize shared memory mailbox bindings once WASM module is instantiated
-function initMailboxBindings(result) {
+// Callback to initialize shared memory IPC bindings once WASM module is instantiated
+function initSharedMemBindings(result) {
     let exports = result.instance.exports;
     wasmShared = new Uint8Array(exports.memory.buffer);
     wasmQueryBuf = exports.wasm_query_buf_ptr();
