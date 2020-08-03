@@ -88,12 +88,11 @@ for wf in WORD_FILES
         # official word list has separate entries for different meanings of the
         # same word.
         warn "Likely duplicate word: #{wf}:  #{ciyu}:#{pinyin}  ==>  try:  grep #{ciyu} *.tsv"
-      end
-      # Conditionally append hanzi for duplicate pinyin search key
-      # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
-      #    spelling, but different part of speech
-      # 2. For the rest, append the new hanzi to the list of choices
-      if !merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
+      else
+        # Conditionally append hanzi for duplicate pinyin search key
+        # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
+        #    spelling, but different part of speech
+        # 2. For the rest, append the new hanzi to the list of choices
         merged_ciyu[first_index_of[normalized_pinyin]] << ciyu
         ciyu_choice_max = [ciyu_choice_max, merged_ciyu[first_index_of[normalized_pinyin]].size].max
       end
