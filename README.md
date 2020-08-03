@@ -15,7 +15,7 @@ lightweight, customizable IME into other software. Try the
 - Maybe Later: 5000 word HSK6, Hangul, Hiragana, Katakana
 
 ### Design
-- Small and efficient (.wasm file with 1200 word vocab is 44 KB)
+- Small and efficient (.wasm file with 1200 word vocab is 30 KB)
 - Sacrifice ease of typing for better privacy (no AI stuff)
 - Builds no_std and does not use heap allocation
 - Intended for plain text user interfaces (CLI or terminal-style web UI)
@@ -184,7 +184,7 @@ To use rustfmt to format an emacs buffer: `C-c C-f`
 
 - [x] Phase 1: Proof of concept WASM demo page with terminal-style UI and
       working IME for 1200 word HSK4 vocabulary.
-- [ ] Phase 2: Tests, build workflow, and documentation for using ime-engine as
+- [x] Phase 2: Tests, build workflow, and documentation for using ime-engine as
       a library for building with and without no_std.
 - [ ] Phase 3: Bigger vocabulary. At least HSK5 (2500). Maybe HSK6 (5000).
 - [ ] Phase 4: Korean and Japanese (maybe). Perhaps add support for Hangul,
