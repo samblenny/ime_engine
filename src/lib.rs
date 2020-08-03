@@ -333,6 +333,11 @@ fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: u
             if let Some(s) = query.char_slice(start, start + 1) {
                 // TODO: Better solution than silently ignoring possible full queue
                 let _ = match s {
+                    // Space and digit characters may be intended to resolve a
+                    // choice of homophone 词语 from an earlier CiOpenChoice
+                    // token. They may also separate the pinyin from a
+                    // CiOne token so it does not get consumed as the prefix
+                    // to a longer 词语.
                     " " => queue.push(lex::Token::MaybeChoice(' ')),
                     "1" => queue.push(lex::Token::MaybeChoice('1')),
                     "2" => queue.push(lex::Token::MaybeChoice('2')),
@@ -345,9 +350,14 @@ fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: u
                     "9" => queue.push(lex::Token::MaybeChoice('9')),
                     _ => {
                         if let Some(c) = s.chars().nth(0) {
+                            // This covers stuff like "UPPER CASE" and emoji
                             queue.push(lex::Token::Other(c))
                         } else {
-                            // If this ever happens, there's a bug.
+                            // Reaching this branch is a bug. For nth(0) to
+                            // return None, s would have to be "" when
+                            // s.chars() gets called. The `let Some(s)` and
+                            // `while start < end` above should not allow that
+                            // to happen.
                             trace(902);
                             false
                         }
