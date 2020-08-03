@@ -82,17 +82,18 @@ for wf in WORD_FILES
     pinyin_ciyu_test_data << [normalized_pinyin, ciyu]
     # Proceed with merging homophones for generating rust query lookup data
     if first_index_of[normalized_pinyin]
+      # Conditionally append 词语 for duplicate pinyin search key
       if merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
+        # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
+        #    spelling, but different part of speech.
+        #
         # If you see this warning, use grep to check for duplicate entries.
         # Verify the part of speech. For some words like 过, 等, and 省, the
         # official word list has separate entries for different meanings of the
         # same word.
         warn "Likely duplicate word: #{wf}:  #{ciyu}:#{pinyin}  ==>  try:  grep #{ciyu} *.tsv"
       else
-        # Conditionally append hanzi for duplicate pinyin search key
-        # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
-        #    spelling, but different part of speech
-        # 2. For the rest, append the new hanzi to the list of choices
+        # 2. Append new 词语 to the list of choices
         merged_ciyu[first_index_of[normalized_pinyin]] << ciyu
         ciyu_choice_max = [ciyu_choice_max, merged_ciyu[first_index_of[normalized_pinyin]].size].max
       end
