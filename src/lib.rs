@@ -335,10 +335,10 @@ fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: u
                 let _ = match s {
                     // Space and digit characters may be intended to resolve a
                     // choice of homophone 词语 from an earlier CiOpenChoice
-                    // token. They may also separate the pinyin from a CiOne
-                    // token so the pinyin does not get consumed as the prefix
-                    // to a longer 词语. Or, the spaces and digits may be
-                    // intended to pass through as ASCII.
+                    // token. Spaces may separate the pinyin from a CiOne token
+                    // so the pinyin does not get consumed as the prefix to a
+                    // longer 词语. Spaces and digits may also be intended to
+                    // pass through as ASCII.
                     " " => queue.push(lex::Token::MaybeChoice(' ')),
                     "1" => queue.push(lex::Token::MaybeChoice('1')),
                     "2" => queue.push(lex::Token::MaybeChoice('2')),
