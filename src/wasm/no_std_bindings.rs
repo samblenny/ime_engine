@@ -7,20 +7,17 @@
 
 #[link(wasm_import_module = "js")]
 extern "C" {
+    fn js_warn_wasm_panic();
     pub fn js_log_trace(code: i32);
 }
 
 use core::panic::PanicInfo;
 #[panic_handler]
 pub fn panic(_panic_info: &PanicInfo) -> ! {
-    // Rust semantics require that panic handler to never return, and docs for
-    // embedded no_std rust suggest to accomplish that with loop {}. In my
-    // wasm32 testing, loop {} pegs CPU at 100% and makes browser UI
-    // unresponsive. Better alternative is to use WebAssembly unreachable trap
-    // instruction (available in stable since late 2019).
     unsafe {
-        core::arch::wasm32::unreachable();
+        js_warn_wasm_panic();
     }
+    loop {}
 }
 
 // Export location & size of IPC message buffers in VM shared memory
