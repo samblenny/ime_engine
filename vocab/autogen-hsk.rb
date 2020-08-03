@@ -56,7 +56,6 @@ if detected != TR_FROM
 end
 abort "Error: Check for TR_FROM/TR_TO length mismatch" if TR_FROM.size != TR_TO.size
 
-
 # Merge ciyu values for duplicate pinyin search keys
 # example: ["he", "he"] and ["喝", "和"] get turned into ["he"] and ["喝\t和"]
 # Notes (subtle ruby semantics):
@@ -82,18 +81,18 @@ for wf in WORD_FILES
     pinyin_ciyu_test_data << [normalized_pinyin, ciyu]
     # Proceed with merging homophones for generating rust query lookup data
     if first_index_of[normalized_pinyin]
+      # Conditionally append 词语 for duplicate pinyin search key
       if merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
+        # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
+        #    spelling, but different part of speech.
+        #
         # If you see this warning, use grep to check for duplicate entries.
         # Verify the part of speech. For some words like 过, 等, and 省, the
         # official word list has separate entries for different meanings of the
         # same word.
         warn "Likely duplicate word: #{wf}:  #{ciyu}:#{pinyin}  ==>  try:  grep #{ciyu} *.tsv"
-      end
-      # Conditionally append hanzi for duplicate pinyin search key
-      # 1. Skip ciyu like 过 guò with same hanzi spelling, same pinyin
-      #    spelling, but different part of speech
-      # 2. For the rest, append the new hanzi to the list of choices
-      if !merged_ciyu[first_index_of[normalized_pinyin]].include?(ciyu)
+      else
+        # 2. Append new 词语 to the list of choices
         merged_ciyu[first_index_of[normalized_pinyin]] << ciyu
         ciyu_choice_max = [ciyu_choice_max, merged_ciyu[first_index_of[normalized_pinyin]].size].max
       end
@@ -111,8 +110,45 @@ for wf in WORD_FILES
   end
 end
 
+
+# Murmur3 hash function; key is UTF-8 string (max 4 bytes/char) so take each
+# ord(char) as one u32 block.
+# Credits: Derived from MurmurHash3.cpp (public domain) by Austin Appleby.
+def murmur3(key, seed)
+  def rotl32(x, r)
+    ((x << r) & 0xffff_ffff) | (x >> (32 - r))
+  end
+  h = seed
+  for c in key.chars
+    k = c.ord
+    k = (k * 0xcc9e2d51) & 0xffff_ffff
+    k = rotl32(k, 15)
+    k = (k * 0x1b873593) & 0xffff_ffff
+    h = h ^ k
+    h = rotl32(h, 13)
+    h = ((h * 5) + 0xe6546b64) & 0xffff_ffff
+  end
+  h = h ^ key.size
+  # Finalize with avalanche
+  h = h ^ (h >> 16)
+  h = (h * 0x85ebca6b) & 0xffff_ffff
+  h = h ^ (h >> 13)
+  h = (h * 0xc2b2ae35) & 0xffff_ffff
+  h ^ (h >> 16)
+end
+
+# Calculate murmur3(merged_pinyin)
+m3_seed = 0
+merged_m3 = merged_pinyin.map {|py| murmur3(py, m3_seed)}
+# Check for hash collisions
+m3_total = merged_m3.size
+m3_uniq = Set.new(merged_m3).size
+puts "\nTotal murmur3 hashes: #{m3_total}"
+puts "Unique murmur3 hashes: #{m3_uniq}"
+puts "Diff: #{m3_total-m3_uniq}"
+
 # Sort the merged vocab lists in pinyin order
-merged_pinyin, merged_ciyu = merged_pinyin.zip(merged_ciyu).sort.transpose
+merged_m3, merged_pinyin, merged_ciyu = merged_m3.zip(merged_pinyin, merged_ciyu).sort.transpose
 
 # Print statistics
 avg_pinyin_key_len = Float(pinyin_char_count) / pinyin_key_count
@@ -143,8 +179,10 @@ File.open(RUST_FILE, "w") { |rf|
     // Note: UTF-8 means both (chars == bytes) or (chars != bytes) possible.
     pub const PINYIN_SIZE_MAX: usize = <%= pinyin_size_max %>;
 
-    pub static PINYIN: &[&'static str] = &[
-    <% merged_pinyin.each do |p| %>    &"<%= p %>",
+    // u32 constants are murmur3 hash of pinyin search keys
+    pub const MURMUR3_SEED: u32 = <%= m3_seed %>;
+    pub static PINYIN: &[u32] = &[
+    <% merged_m3.zip(merged_pinyin).each do |m3,py| %>    <%= "0x%08x, // %s" % [m3, py] %>
     <% end %>];
 
     // Tuples are (normalized_pinyin, 词语) from early in vocab file code

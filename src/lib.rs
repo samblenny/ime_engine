@@ -186,6 +186,32 @@ pub mod lex {
     } // end impl TokenQueue
 } // end lex
 
+// Murmur3 hash function; Unicode ordinal value of each char is a u32 block.
+// Credits: Derived from MurmurHash3.cpp (public domain) by Austin Appleby.
+// Returns: u32 hash
+pub fn murmur3(key: &str, seed: u32) -> u32 {
+    let mut h = seed;
+    let mut k;
+    // Hash each character as its own u32 block
+    for c in key.chars() {
+        k = c as u32;
+        k = k.wrapping_mul(0xcc9e2d51);
+        k = k.rotate_left(15);
+        k = k.wrapping_mul(0x1b873593);
+        h ^= k;
+        h = h.rotate_left(13);
+        h = h.wrapping_mul(5);
+        h = h.wrapping_add(0xe6546b64);
+    }
+    h ^= key.bytes().count() as u32;
+    // Finalize with avalanche
+    h ^= h >> 16;
+    h = h.wrapping_mul(0x85ebca6b);
+    h ^= h >> 13;
+    h = h.wrapping_mul(0xc2b2ae35);
+    h ^ (h >> 16)
+}
+
 // Find longest 词语 match in start..end character window of query buffer.
 // Side-effect: None.
 // Return: (index in 词语 array for match, end boundary character in query for match)
@@ -194,7 +220,8 @@ fn longest_match(query: &Utf8Str, start: usize, mut end: usize) -> Option<(CiyuI
     // Subtle point: implicit test for end > 0
     while end > start {
         if let Some(query_slice) = query.char_slice(start, end) {
-            if let Ok(ciyu) = autogen_hsk::PINYIN.binary_search(&query_slice) {
+            let key = murmur3(&query_slice, autogen_hsk::MURMUR3_SEED);
+            if let Ok(ciyu) = autogen_hsk::PINYIN.binary_search(&key) {
                 return Some((ciyu, end));
             }
         }
@@ -408,6 +435,7 @@ mod tests {
     use super::constants;
     use super::wasm::ipc_mem;
     use super::BufWriter;
+    use super::autogen_hsk;
 
     // Send query string to ime-engine; THIS IS NOT THREAD SAFE.
     // Returns: reply string.
@@ -472,7 +500,7 @@ mod tests {
 
     #[test]
     fn query_all_pinyin_search_keys_verify_ciyu() {
-        let test_data = &crate::autogen_hsk::PINYIN_CIYU_TEST_DATA;
+        let test_data = &autogen_hsk::PINYIN_CIYU_TEST_DATA;
         for (normalized_pinyin, ciyu) in test_data.iter() {
             assert!(query(normalized_pinyin).contains(ciyu));
         }
@@ -555,6 +583,19 @@ mod tests {
     // is okay. Fail means time for fancier algorithm to resolve choices.
     #[test]
     fn longest_choice_has_nine_or_less_options() {
-        assert!(crate::autogen_hsk::CIYU_CHOICE_MAX <= 9);
+        assert!(autogen_hsk::CIYU_CHOICE_MAX <= 9);
+    }
+
+    // This might fail some day as a consequence of vocab data entry. In case
+    // of failure due to hash collision, try changing the murmur3 seed in
+    // vocab/autogen_hsk.rb.
+    #[test]
+    fn pinyin_murmur3_hashes_are_sorted_with_no_collisions() {
+        let mut prev = autogen_hsk::PINYIN[0];
+        for i in 1..autogen_hsk::PINYIN.len() {
+            let curr = autogen_hsk::PINYIN[i];
+            assert!(curr > prev);
+            prev = curr;
+        }
     }
 }
