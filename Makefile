@@ -7,20 +7,23 @@ DEBUG=-C debuginfo=0 -C debug-assertions=off
 LINK_OPT=-C codegen-units=1 -C lto=fat
 WASM_ARGS=$(TARGET) $(PANIC) $(OPT) $(CRATE_TYPE) $(DEBUG) $(LINK_OPT)
 WASM_OUTPUT=wasm-demo/ime-engine.wasm
-RUST_SRC=src/*.rs
 
-default: $(RUST_SRC)
+.PHONY: default
+default:
 	cargo build
 
-run: $(RUST_SRC)
+.PHONY: run
+run:
 	cargo run --quiet
 
-wasm: $(RUST_SRC)
+.PHONY: wasm
+wasm:
 	rustc $(WASM_ARGS) src/lib.rs -o $(WASM_OUTPUT)
 
 # ime-engine IS NOT thread safe, so turn off parallel tests
 # Point of --lib is to turn off messages about doc tests
-test: $(RUST_SRC)
+.PHONY: test
+test:
 	cargo test --lib -- --test-threads 1
 
 .PHONY: clean
