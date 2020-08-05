@@ -183,3 +183,309 @@
 规律	guīlǜ
 规则	guize
 锅	guō	n.	pot, pan
+果然	guoran
+果实	guoshi
+哈	hā	onom./int.	sound of laughter; indicating complacency or satisfaction
+海鲜	haixian
+喊	hǎn	v.	to shout, to call
+豪华	haohua
+好客	haoke
+好奇	haoqi
+合作	hezuo
+何必	hebi
+何况	hekuang
+很	hèn	v.	to hate
+猴子	houzi
+后背	houbei
+呼朋唤友	hupeng huanyou
+呼吸	huxi
+忽然	huran
+忽视	hushi
+胡说	hushuo
+胡同	hutong
+壶	hú	n.	pot, kettle
+糊涂	hutu
+华裔	huayi
+滑	huá	adj./v.	slippery; to slip, to slide
+话题	huati
+慌	huāng	adj.	flurried, flustered
+慌张	huāngzhāng	adj.	flurried, flustered
+灰尘	huichen
+挥	huī	v.	to wave, to weild
+婚礼	hunli
+婚姻	hunyin
+活跃	huoyue
+伙伴	huoban
+或许	huoxu
+击	jī	v.	to hit, to strike
+机器	jīqì	n.	machine
+激烈	jilie
+极其	jíqí	adv.	extremely
+即	jí	v./adv.	to be; namely
+集中	jizhong
+计算	jisuan
+记忆	jiyi
+纪念	jinian
+系	jì	v.	to tie, to fasten
+家庭	jiating
+甲	jiǎ	n.	first
+驾驶	jiashi
+坚决	jianjue
+肩膀	jianbang
+艰苦	jianku
+建筑	jianzhu
+讲究	jiangjiu
+交际	jiaoji
+角度	jiaodu
+结实	jieshi
+接待	jiedai
+节省	jiesheng
+节食	jieshi
+结构	jiegou
+结论	jielun
+戒	jiè	v.	to give up, to quit
+借口	jiekou
+金属	jinshu
+尽	jìn	v.	to try one's best
+尽力	jìnlì	v.	to try one's best
+近代	jindai
+经营	jingying
+精神	jingshen
+救	jiù	v.	to save, to rescue
+舅舅	jiujiu
+居然	juran
+具备	jubei
+决心	juexin
+绝对	juedui
+军事	junshi
+开发	kaifa
+开幕式	kaimushi
+靠	kào	v.	to lean against
+颗	kē	m.	used for things small and roundish
+可见	kejian
+可靠	kekao
+空间	kongjian
+啦	la	part.	combination of the sounds of "了(le)" and "啊(a)", expressing exclamation, interrogation, etc.
+拦	lán	v.	to block, to hold back
+烂	làn	adj.	bad, lame
+劳动	laodong
+老百姓	laobaixing
+老婆	laopo
+老实	lǎoshi	adj.	honest, frank
+姥姥	laolao
+雷	léi	n.	thunder
+类型	leixing
+离婚	lihun
+理论	lilun
+立即	lìjí	adv.	immediately, at once
+立刻	lìkè	adv.	at once, immediately
+连忙	liánmáng	adv.	promptly, at once
+连续	lianxu
+联合	lianhe
+良好	lianghao
+粮食	liangshi
+亮	liàng	adj./v.	bright; to shine
+临	lín	prep.	about to, just before
+临时	linshi
+灵活	linghuo
+铃	líng	n.	bell
+令	lìng	v.	to make, to cause
+流传	liuchuan
+流泪	liu lei
+龙	lóng	n.	dragon
+漏	lòu	v.	(of a container) to leak
+陆地	ludi
+轮	lún	v.	to take turns
+轮流	lúnliú	v.	to take turns
+骂	mà	v.	to curse, to call names
+馒头	mantou
+满足	manzu
+毛病	maobing
+矛盾	maodun
+美术	meishu
+魅力	meili
+苗条	miaotiao
+描写	miaoxie
+明明	mingming
+明显	mingxian
+明星	mingxing
+命令	mingling
+摸	mō	v.	to touch, to feel, to stroke
+模仿	mofang
+目前	muqian
+哪怕	napa
+脑袋	naodai
+闹钟	naozhong
+宁可	ningke
+农村	nongcun
+农民	nongmin
+浓	nóng	adj.	strong, deep
+女士	nǚshì	n.	lady, madam
+拍	pāi	v.	to take (a photo), to shoot (a video)
+派	pài	v.	to send, to assign, to appoint
+派	pài	n.	faction, school, group of people sharing identical ideas, style or tastes
+盼望	panwang
+盆	pén	n.	basin, tub
+盆子	pénzi	n.	basin, tub
+碰	pèng	v.	to meet, to come across
+匹	pǐ	m.	used for horses
+片面	pianmian
+飘	piāo	v.	to float (in the air), to waft
+平	píng	adj.	flat, level
+平常	pingchang
+平静	pingjing
+平均	pingjun
+评价	pingjia
+其余	qiyu
+奇迹	qiji
+企业	qiye
+启发	qifa
+气氛	qifen
+签	qiān	v.	to sign, to autograph
+浅	qiǎn	adj.	shallow, light
+强烈	qianglie
+墙	qiáng	n.	wall
+抢	qiǎng	v.	to rob, to snatch
+悄悄	qiaoqiao
+瞧	qiáo	v.	to look, to see
+亲切	qinqie
+亲自	qinzi
+勤奋	qinfen
+轻视	qingshi
+情景	qingjing
+情绪	qingxu
+请求	qingqiu
+球迷	qiumi
+趋势	qūshì	n.	trend, tendency
+去世	qùshì	v.	to die, to pass away
+缺乏	quefa
+确定	queding
+确认	queren
+群	qún	m.	group, herd, flock
+人才	rencai
+人类	renlei
+人民	renmin
+人生	rensheng
+人员	renyuan
+日常	richang
+日子	rizi
+如何	ruhe
+如今	rujin
+弱	ruò	adj.	weak
+洒	sǎ	v.	to sprinkle, to spray
+杀	shā	v.	to kill
+晒	shài	v.	to dry in the sun
+闪电	shandian
+扇子	shànzi	n.	fan
+善良	shanliang
+善于	shanyu
+伤害	shānghài	v.	to hurt, to harm
+上当	shang dang
+设计	shèjì	v./n.	to design; design
+射	shè	v.	to shoot
+射击	shèjī	v.	to shoot
+摄影师	sheyingshi
+伸	shēn	v.	to stretch, to extend
+身份	shenfen
+深刻	shenke
+神秘	shenmi
+升	shēng	v.	to rise, to go up
+绳子	shengzi
+胜利	shengli
+失眠	shimian
+诗	shī	n.	poem
+石头	shitou
+时代	shidai
+时刻	shike
+时期	shiqi
+时尚	shishang
+实现	shixian
+实验	shiyan
+食物	shiwu
+始终	shizhong
+士兵	shibing
+市场	shichang
+似的	shide
+事实	shìshí	n.	fact
+事物	shiwu
+手指	shouzhi
+守岁	shousui
+首	shǒu	n.	head, first
+舒适	shushi
+蔬菜	shucai
+数	shù	num.	several
+甩	shuǎi	v.	to throw off, to swing
+说不定	shuobuding
+说服	shuofu
+似乎	sihu
+算	suàn	v.	to regard as, to count as
+随时	suishi
+随手	suishou
+碎	suì	v./adj.	to break into pieces; broken, fragmentary
+所	suǒ	part.	used before a verb followed by a noun which is the receiver of the action
+所谓	suowei
+锁	suǒ	n./v.	lock; to lock up
+台阶	taijie
+太太	taitai
+逃	táo	v.	to escape
+桃	táo	n.	peach
+淘气	taoqi
+套	tào	m.	set, suite
+体会	tihui
+代替	dàitì	prep.	for, on behalf of
+替	tì	prep.	for, on behalf of
+天真	tianzhen
+调皮	tiaopi
+调整	tiaozheng
+挑战	tiaozhan
+通常	tongchang
+投篮	tou lan
+投入	touru
+突出	tuchu
+推广	tuiguang
+推荐	tuijian
+外公	waigong
+完整	wanzheng
+危害	weihai
+微笑	weixiao
+为	wéi	v.	to become
+为	wéi	prep.	(often used together with "所 (suǒ)" by (sb.)
+围绕	weirao
+尾巴	weiba
+委屈	weiqu
+未来	weilai
+位于	weiyu
+位置	weizhi
+胃	wèi	n.	stomach
+胃口	weikou
+温暖	wennuan
+文学家	wenxuejia
+文字	wenzi
+稳定	wending
+卧室	woshi
+屋子	wūzi	n.	house
+屋	wū	n.	house
+无奈	wunai
+勿	wù	adv.	(used in imperative sentences) don't
+物质	wuzhi
+戏剧	xiju
+细节	xijie
+瞎	xiā	v./adv.	to be blind; blindly, foolishly
+吓	xià	v.	to frighten, to scare
+显得	xiande
+显示	xianshi
+县	xiàn	n.	county
+现代	xiandai
+现实	xianshi
+现象	xianxiang
+限制	xianzhi
+相处	xiangchu
+相当	xiangdang
+相对	xiangdui
+相关	xiangguan
+享受	xiangshou
+想象	xiangxiang
+项	xiàng	m.	used for itemized things
+项目	xiangmu
+大象	dàxiàng	n.	elephant
+象	xiàng	n.	elephant
