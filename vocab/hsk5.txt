@@ -489,3 +489,123 @@
 项目	xiangmu
 大象	dàxiàng	n.	elephant
 象	xiàng	n.	elephant
+消费	xiaofei
+销售	xiaoshou
+孝顺	xiaoshun
+斜	xié	adj.	oblique, slanting
+写作	xiezuo
+心理	xinli
+欣赏	xinshang
+行为	xingwei
+形成	xingcheng
+形容	xingrong
+形式	xíngshì	n.	form, mode
+形势	xíngshì	n.	situation, state of affairs
+形象	xingxiang
+形状	xingzhuang
+兄弟	xiongdi
+叙述	xushu
+宣传	xuanchuan
+学问	xuewen
+寻找	xunzhao
+询问	xunwen
+训练	xunlian
+迅速	xunsu
+牙齿	yachi
+样式	yangshi
+摇	yáo	v.	to wave, to shake
+咬	yǎo	v.	to bite
+要不	yaobu
+业务	yewu
+业余	yeyu
+夜	yè	n.	night
+依然	yiran
+一辈子	yibeizi
+一再	yizai
+移动	yidong
+移民	yimin
+乙	yǐ	n.	second (of counting)	[see 天干]
+以	yǐ	conj.	in order to, so as to
+以及	yiji
+以来	yilai
+亿	yì	num.	hundred million
+意外	yiwai
+意义	yiyi
+因而	yīn'ér	conj.	therefore, thus
+银子	yínzi	n.	silver
+银	yín	n.	silver
+英俊	yingjun
+英雄	yingxiong
+营养	yingyang
+影子	yingzi
+应用	yingyong
+硬	yìng	adj.	hard, tough
+拥抱	yongbao
+用途	yongtu
+优美	youmei
+悠久	youjiu
+幼儿园	yòu'éryuán	n.	kindergarten
+于	yú	prep.	from, out of
+愿望	yuanwang
+晕	yūn	v.	to faint, to pass out
+运用	yunyong
+灾害	zaihai
+再三	zaisan
+赞美	zanmei	v.	to praise, to extol	[dictionary spelling: zànměi]
+赞美	zanmai	v.	to praise, to extol	[book spelling: zànmǎi; error?]
+糟糕	zaogao
+造成	zaocheng
+则	zé	m.	(used for news or writings) piece
+则	zé	conj.	(indicating contrast) while
+占	zhàn	v.	to occupy, to take, to hold, to make up
+战争	zhanzheng
+长辈	zhangbei
+招待	zhaodai
+着火	zhao huo
+召开	zhaokai
+针对	zhendui
+阵	zhèn	m.	used for a short period or spell of an occurrence or action
+争论	zhenglun
+争取	zhengqu
+整个	zhengge
+整体	zhengti
+证据	zhengju
+挣	zhèng	v.	to earn
+支	zhī	m.	used for long, thin, inflexible objects
+至今	zhijin
+志愿者	zhiyuanzhe
+制造	zhizao
+治疗	zhìliáo	v.	to treat, to cure
+治	zhì	v.	to treat, to cure
+智慧	zhihui
+中心	zhongxin
+重大	zhongda
+猪	zhū	n.	pig
+竹子	zhúzi	n.	bamboo
+逐渐	zhujian
+主持	zhuchi
+主动	zhudong
+主人	zhuren
+注册	zhuce
+专家	zhuanjia
+装	zhuāng	v.	to load, to hold
+装修	zhuangxiu
+状态	zhuangtai
+撞	zhuàng	v.	to bump against
+追	zhuī	v.	to chase, to go after
+姿势	zishi
+资格	zige
+资料	ziliao
+自杀	zisha
+自由	ziyou
+综合	zonghe
+总裁	zongcai
+总共	zonggong
+阻止	zuzhi
+组	zǔ	n./m.	group, team, set
+组成	zucheng
+组合	zuhe
+醉	zuì	v.	to be drunk
+作品	zuopin
+作为	zuowei
+作战	zuozhan
