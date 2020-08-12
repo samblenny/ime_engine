@@ -10,12 +10,11 @@ lightweight, customizable IME into other software. Try the
 ## Features
 
 ### Language Support
-- Now: Simplified Chinese with 1200 word HSK4 level vocabulary
-- Soonish: 2500 word HSK5
+- Now: Simplified Chinese with 2500 word HSK5 level vocabulary
 - Maybe Later: 5000 word HSK6, Hangul, Hiragana, Katakana
 
 ### Design
-- Small and efficient (.wasm file with 1200 word vocab is 30 KB)
+- Small and efficient (.wasm file with 2500 word vocab is 55 KB)
 - Sacrifice ease of typing for better privacy (no AI stuff)
 - Builds no_std and does not use heap allocation
 - Intended for plain text user interfaces (CLI or terminal-style web UI)
@@ -48,7 +47,7 @@ $ make run
 cargo run --quiet
 
 woxiangheguozhi
-我 (1想 2向 3像 4香 5响)  (1喝 2和 3河) 果汁
+我 (1想 2向 3像 4香 5响 6项 7象)  (1喝 2和 3河) 果汁
 
 woxiang heguozhi
 我想 (1喝 2和 3河) 果汁
@@ -186,6 +185,7 @@ To use rustfmt to format an emacs buffer: `C-c C-f`
       working IME for 1200 word HSK4 vocabulary.
 - [x] Phase 2: Tests, build workflow, and documentation for using ime-engine as
       a library for building with and without no_std.
-- [ ] Phase 3: Bigger vocabulary. At least HSK5 (2500). Maybe HSK6 (5000).
-- [ ] Phase 4: Korean and Japanese (maybe). Perhaps add support for Hangul,
+- [x] Phase 3: Bigger vocabulary. At least HSK5 (2500).
+- [ ] Phase 4: Maybe HSK6 (5000).
+- [ ] Phase 5: Maybe Korean and Japanese. Perhaps add support for Hangul,
       Hiragana, and Katakana. Probably not Kanji though.
