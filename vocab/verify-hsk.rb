@@ -25,7 +25,10 @@ end
 
 def get_tsv_words(filename)
   words = []
-  for row in File.read(filename).lines
+  # Filter out blank lines and "#..." comments
+  filtered_lines = File.read(filename).lines
+                     .select { |n| !n.start_with?("#") && n.include?("\t") }
+  for row in filtered_lines
     hanzi, _pinyin = row.chomp.split("\t")
     words << hanzi
   end
@@ -59,8 +62,8 @@ def compare_tsv_to_official(tsv_filename, official_words)
   else
     missing = official_words - tsv_words
     extra = tsv_words - official_words
-    puts "  Missing words (not in TSV file):\n   #{missing.to_a.join("\n   ")}" if !missing.empty?
-    puts "  Extra words (not in official test list):\n   #{extra.to_a.join("\n   ")}" if !extra.empty?
+    puts "  Missing words (#{missing.size} not in TSV file):\n   #{missing.to_a.join("\n   ")}" if !missing.empty?
+    puts "  Extra words (#{extra.size} not in official test list):\n   #{extra.to_a.join("\n   ")}" if !extra.empty?
   end
 end
 
@@ -69,3 +72,4 @@ compare_tsv_to_official("hsk1.tsv", new_words[:hsk1])
 compare_tsv_to_official("hsk2.tsv", new_words[:hsk2])
 compare_tsv_to_official("hsk3.tsv", new_words[:hsk3])
 compare_tsv_to_official("hsk4.tsv", new_words[:hsk4])
+compare_tsv_to_official("hsk5.tsv", new_words[:hsk5])

@@ -595,13 +595,10 @@ mod tests {
 
     #[test]
     fn space_disambiguating_pinyin_prefix_is_consumed() {
-        assert_eq!("按饿", query(&"ane"));
-        assert_eq!("啊呢", query(&"a ne"));
-        assert_eq!("按饿", query(&"an e"));
+        assert_eq!("昆虫", query(&"kunchong"));
+        assert_eq!("困冲", query(&"kun chong"));
+        assert_eq!("困冲", query(&"kun chong "));
         assert_eq!("我想喝果汁", query(&"wo xiang he guozhi"));
-        assert_eq!("您饿", query(&"nine"));
-        assert_eq!("你呢", query(&"ni ne"));
-        assert_eq!("你呢", query(&"ni ne "));
     }
 
     // This might fail some day as consequence of vocab data entry. As long as
