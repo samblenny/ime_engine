@@ -13,6 +13,8 @@ WORD_FILES = [
   "hsk3-extra.tsv",
   "hsk4.tsv",
   "hsk4-extra.tsv",
+  "hsk5.tsv",
+  "hsk5-extra.tsv",
 ]
 
 # Returns array: [[ciyu, pinyin], [ciyu, pinyin], ...] (see note 2)
@@ -36,9 +38,10 @@ def char_set(file)
 end
 
 # Normalize pinyin to lowercase ASCII (remove diacritics/whitespace/punctuation).
-TR_FROM = " 'abcdefghijklmnopqrstuwxyzàáèéìíòóùúüāēěīōūǎǐǒǔǚ"
-TR_TO   = " 'abcdefghijklmnopqrstuwxyzaaeeiioouuvaeeiouaiouv"
-ELIDE   = " '"
+TR_FROM = " '-<>`abcdefghijklmnopqrstuwxyzÀàáèéìíòóùúüāēěīŌōūǎǐǒǔǚǜǹ"
+TR_TO   = " '-<>`abcdefghijklmnopqrstuwxyzaaaeeiioouuvaeeioouaiouvvn"
+# CAUTION: "-" must go last or String.delete will interpret it as indicating a range
+ELIDE   = " '-"
 def normalize(pinyin)
   n = pinyin.downcase.delete(ELIDE).tr(TR_FROM, TR_TO)
   abort "Error: normalize(#{pinyin}) gave #{n} (non-ascii). Check TR_FROM & TR_TO." if !n.ascii_only?
@@ -90,7 +93,7 @@ for wf in WORD_FILES
         # Verify the part of speech. For some words like 过, 等, and 省, the
         # official word list has separate entries for different meanings of the
         # same word.
-        warn "Likely duplicate word: #{wf}:  #{ciyu}:#{pinyin}  ==>  try:  grep #{ciyu} *.tsv"
+        warn "Duplicate?: #{"%14s" % wf}:  #{ciyu}:#{"%10s" % pinyin}   ==>    grep '^#{ciyu}\\t' *.tsv"
       else
         # 2. Append new 词语 to the list of choices
         merged_ciyu[first_index_of[normalized_pinyin]] << ciyu

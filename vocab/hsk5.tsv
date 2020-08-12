@@ -133,7 +133,7 @@
 发愁	fa chou
 发达	fada
 反而	fan'er
-反应	fǎnyìng	n./v.	response; to react
+反应	fǎnyìng	n./v.	response; to respond, to react	[merged with duplicate in 5下]
 反映	fǎnyìng	v.	to reflect, to mirror
 方	fang
 方案	fang'an
@@ -163,7 +163,7 @@
 个别	gebie
 个人	geren
 各自	gezi
-根	gen
+根	gēn	m./n.	root, foundation; a measure word for long and thin objects	[merged with duplicate in 5下]
 工程师	gongchengshi
 工具	gongju
 工人	gongren
@@ -210,7 +210,7 @@
 滑	huá	adj./v.	slippery; to slip, to slide
 话题	huati
 慌	huāng	adj.	flurried, flustered
-慌张	huāngzhāng	adj.	flurried, flustered
+慌张	huāngzhāng	adj.	flurried, flustered	[merged with duplicate in 5下]
 灰尘	huichen
 挥	huī	v.	to wave, to weild
 婚礼	hunli
@@ -251,7 +251,8 @@
 尽力	jìnlì	v.	to try one's best
 近代	jindai
 经营	jingying
-精神	jingshen
+精神	jīngshén	n.	spirit, essence	[textbook + dictionary]
+精神	jīngshen	n./adj.	energy, vigor; lively, vigorous	[textbook + dictionary]
 救	jiù	v.	to save, to rescue
 舅舅	jiujiu
 居然	juran
@@ -316,7 +317,7 @@
 目前	muqian
 哪怕	napa
 脑袋	naodai
-闹钟	naozhong
+闹钟	nàozhōng	n.	alarm clock
 宁可	ningke
 农村	nongcun
 农民	nongmin
@@ -359,7 +360,7 @@
 球迷	qiumi
 趋势	qūshì	n.	trend, tendency
 去世	qùshì	v.	to die, to pass away
-缺乏	quefa
+缺乏	quēfá	v.	to lack, to be short of	[merged with duplicate in 5下]
 确定	queding
 确认	queren
 群	qún	m.	group, herd, flock
@@ -432,7 +433,7 @@
 桃	táo	n.	peach
 淘气	taoqi
 套	tào	m.	set, suite
-体会	tihui
+体会	tǐhuì	v./n.	to learn from experience, to realize; feeling, understanding	[merged with duplicate in 5下]
 代替	dàitì	prep.	for, on behalf of
 替	tì	prep.	for, on behalf of
 天真	tianzhen
@@ -714,14 +715,13 @@
 翻	fān	v.	to turn (over)
 繁荣	fanrong
 反复	fanfu
-反应	fanying
 反正	fanzheng
 范围	fanwei
 妨碍	fáng'ài	v.	to hinder, to impede
 肥皂	feizao
 废	fèi	adj.	waste, useless
 奋斗	fendou
-风景	fengjing
+风景	fēngjǐng	n.	scenery, view
 风险	fengxian
 否认	fouren
 妇女	fùnǚ	n.	woman
@@ -737,7 +737,6 @@
 钢铁	gangtie
 搞	gǎo	v.	(followed by a complement) to produce a certain effect or result
 个性	gexing
-根	gēn	n.	root
 根本	genben
 工厂	gongchang
 工业	gongye
@@ -771,7 +770,6 @@
 怀念	huainian
 缓解	huanjie
 幻想	huanxiang
-慌张	huangzhang
 灰	huī	n./adj.	dust; gray
 灰心	huixin
 恢复	huifu
@@ -868,7 +866,7 @@
 梦想	mengxiang
 秘密	mimi
 密切	miqie
-面对	miandui
+面对	miànduì	v.	to face, to confront
 面积	mianji
 面临	mianlin
 敏感	mingan
@@ -928,7 +926,6 @@
 圈	quān	n.	circle, ring
 全面	quanmian
 劝	quàn	v.	to try to persuade
-缺乏	quefa
 燃烧	ranshao
 热爱	rè'ài	v.	to love ardently
 热烈	relie
@@ -985,7 +982,6 @@
 提倡	tichang
 提问	tiwen
 题目	timu
-体会	tihui
 体贴	titie
 体现	tixian
 体验	tiyan
@@ -1123,3 +1119,258 @@
 尊敬	zunjing
 遵守	zunshou
 作文	zuowen
+# HSK5 words on test list but not listed in either of HSK5上 or HSK5下 appendix
+包裹	bāoguǒ
+保持	bǎochí
+报到	bàodào
+悲观	bēiguān
+标点	biāodiǎn
+病毒	bìngdú
+博物馆	bówùguǎn
+叉子	chāzi
+拆	chāi
+抄	chāo
+超级	chāojí
+车库	chēkù
+车厢	chēxiāng
+程序	chéngxù
+尺子	chǐzi
+充电器	chōngdiàn qì
+抽屉	chōuti
+丑	chǒu
+臭	chòu
+出口	chūkǒu
+初级	chūjí
+传播	chuánbō
+传染	chuánrǎn
+匆忙	cōngmáng
+打喷嚏	dǎ pēntì
+贷款	dàikuǎn
+单元	dānyuán
+淡	dàn
+当心	dāngxīn
+滴	dī
+地毯	dìtǎn
+豆腐	dòufu
+兑换	duìhuàn
+多余	duōyú
+耳环	ěrhuán
+发表	fābiǎo
+发明	fāmíng
+发票	fāpiào
+罚款	fákuǎn
+法院	fǎyuàn
+废话	fèihuà
+分配	fēnpèi
+分手	fēnshǒu
+风格	fēnggé
+疯狂	fēngkuáng
+否定	fǒudìng
+辅导	fǔdǎo
+复制	fùzhì
+改正	gǎizhèng
+隔壁	gébì
+公平	gōngpíng
+公主	gōngzhǔ
+恭喜	gōngxǐ
+股票	gǔpiào
+挂号	guàhào
+拐弯	guǎiwān
+怪不得	guàibude
+管子	guǎnzi
+光盘	guāngpán
+规模	guīmó
+柜台	guìtái
+国庆节	Guóqìngjié
+国王	guówáng
+过敏	guòmǐn
+过期	guòqī
+海关	hǎiguān
+合法	héfǎ
+合同	hétong
+合影	héyǐng
+恨	hèn
+花生	huāshēng
+划	huá
+化学	huàxué
+怀孕	huáiyùn
+黄金	huángjīn
+汇率	huìlǜ
+急忙	jímáng
+急诊	jízhěn
+集合	jíhé
+集体	jítǐ
+系领带	jì lǐngdài
+夹子	jiāzi
+嘉宾	jiābīn
+假装	jiǎzhuāng
+嫁	jià
+坚强	jiānqiáng
+兼职	jiānzhí
+键盘	jiànpán
+胶水	jiāoshuǐ
+教材	jiàocái
+结账	jiézhàng
+戒指	jièzhi
+进口	jìnkǒu
+精力	jīnglì
+救护车	jiùhùchē
+桔子	júzi
+俱乐部	jùlèbù
+捐	juān
+卡车	kǎchē
+看望	kànwang
+克	kè
+课程	kèchéng
+会计	kuàijì
+辣椒	làjiāo
+老鼠	lǎoshǔ
+厘米	límǐ
+利息	lìxī
+列车	lièchē
+零件	língjiàn
+零食	língshí
+领导	lǐngdǎo
+浏览	liúlǎn
+录音	lùyīn
+论文	lùnwén
+麦克风	màikèfēng
+贸易	màoyì
+眉毛	méimao
+秘书	mìshū
+蜜蜂	mìfēng
+名片	míngpiàn
+名胜古迹	míngshèng gǔjì
+模特	mótèr
+摩托车	mótuōchē
+目录	mùlù
+内科	nèikē
+牛仔裤	niúzǎikù
+欧洲	Ōuzhōu
+配合	pèihé
+披	pī
+拼音	pīnyīn
+频道	píndào
+平方	píngfāng
+破产	pòchǎn
+欠	qiàn
+枪	qiāng
+青春	qīngchūn
+娶	qǔ
+权力	quánlì
+权利	quánlì
+绕	rào
+人口	rénkǒu
+人民币	rénmínbì
+人事	rénshì
+日历	rìlì
+日期	rìqī
+软	ruǎn
+软件	ruǎnjiàn
+嗓子	sǎngzi
+删除	shānchú
+蛇	shé
+摄影	shèyǐng
+神话	shénhuà
+生动	shēngdòng
+声调	shēngdiào
+省略	shěnglüè
+失业	shīyè
+狮子	shīzi
+时差	shíchā
+时髦	shímáo
+实习	shíxí
+试卷	shìjuàn
+收据	shōujù
+手工	shǒugōng
+手术	shǒushù
+手套	shǒutào
+寿命	shòumìng
+书架	shūjià
+鼠标	shǔbiāo
+数码	shùmǎ
+双方	shuāngfāng
+税	shuì
+丝绸	sīchóu
+撕	sī
+搜索	sōusuǒ
+宿舍	sùshè
+太极拳	tàijíquán
+谈判	tánpàn
+坦率	tǎnshuài
+讨价还价	tǎojià-huánjià
+提纲	tígāng
+统一	tǒngyī
+偷	tōu
+土地	tǔdì
+土豆	tǔdòu
+吐	tǔ
+兔子	tùzi
+团	tuán
+推辞	tuīcí
+退	tuì
+退步	tuìbù
+歪	wāi
+玩具	wánjù
+往返	wǎngfǎn
+围巾	wéijīn
+维修	wéixiū
+伟大	wěidà
+文件	wénjiàn
+文学	wénxué
+问候	wènhòu
+握手	wòshǒu
+武术	wǔshù
+雾	wù
+夏令营	xiàlìngyíng
+香肠	xiāngcháng
+项链	xiàngliàn
+象征	xiàngzhēng
+消化	xiāohuà
+小麦	xiǎomài
+小气	xiǎoqi
+血	xiě
+信号	xìnhào
+信任	xìnrèn
+性质	xìngzhì
+修改	xiūgǎi
+宣布	xuānbù
+学历	xuélì
+学术	xuéshù
+演讲	yǎnjiǎng
+宴会	yànhuì
+阳台	yángtái
+痒	yǎng
+议论	yìlùn
+硬件	yìngjiàn
+优惠	yōuhuì
+语气	yǔqì
+玉米	yùmǐ
+预报	yùbào
+预订	yùdìng
+乐器	yuèqì
+摘	zhāi
+粘贴	zhāntiē
+展览	zhǎnlǎn
+账户	zhànghù
+着凉	zháoliáng
+哲学	zhéxué
+诊断	zhěnduàn
+振动	zhèndòng
+正	zhēng
+证件	zhèngjiàn
+政治	zhèngzhì
+支票	zhīpiào
+执照	zhízhào
+制定	zhìdìng
+制度	zhìdù
+中介	zhōngjiè
+周到	zhōudào
+主任	zhǔrèn
+祝福	zhùfú
+专心	zhuānxīn
+转告	zhuǎngào
+字母	zìmǔ
+字幕	zìmù
+总理	zǒnglǐ
+总统	zǒngtǒng
