@@ -114,8 +114,11 @@ for wf in WORD_FILES
   end
 end
 
-# Add the punctuation separately because it should not by normalized
+# Add the punctuation separately because it should not by normalized.
+# Using .sub("\\","\\\\\\\\") adds an extra backslash to line with "\ 、"
+# to prevent a single backslash from escaping its closing quote
 for ciyu, pinyin in read_tsv(PUNCTUATION_FILE)
+  pinyin_ciyu_test_data << [pinyin.sub("\\","\\\\\\\\"), ciyu]
   merged_ciyu[i] = [ciyu]
   merged_pinyin[i] = pinyin
   i += 1
