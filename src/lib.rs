@@ -130,8 +130,8 @@ pub mod lex {
                 false
             }
         }
-        // Iterate through tokens, resolve choices, render to oubox.
-        // Side-effect: Send strings to Writer.
+        // Iterate through tokens, resolve choices, render as strings.
+        // Side-effect: render strings into buffer provided by Writer.
         // Possible surprising behavior:
         // - Value of CiOpenChoice depends on lookahead for MaybeChoice
         // - MaybeChoice gets consumed (skipped) if used to resolve choice
@@ -247,7 +247,7 @@ fn longest_match(query: &Utf8Str, start: usize, mut end: usize) -> Option<(CiyuI
 }
 
 // Render 词语 multi-matches as resolved choice or prompt for choice.
-// Side-effect: Send results to oubox buffer.
+// Side-effect: render strings into buffer provided by Writer.
 // Return: Was the maybe_choice token used to resolve a choice?
 enum ExpandChoiceResult {
     WasChoice,
@@ -371,7 +371,7 @@ fn search(query: &Utf8Str, queue: &mut lex::TokenQueue, mut start: usize, end: u
 }
 
 // Look up 词语 for search query (pinyin keys are ASCII, but inbox is UTF-8).
-// Side-effect: copies utf8 result string to IPC out buffer.
+// Side-effect: renders utf8 result string into buffer provided by Writer.
 fn look_up(query_bytes: &str, sink: &mut impl Writer) {
     let query = Utf8Str::new(query_bytes);
     let mut queue = lex::TokenQueue::new();

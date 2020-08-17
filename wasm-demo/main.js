@@ -6,10 +6,6 @@ const chatLog = document.querySelector("#log");
 const suggest = document.querySelector("#suggest");
 const compose = document.querySelector("#compose");
 
-// Scrollback buffer for chat history
-const historySize = 100;
-const historyBuffer = [];
-
 // Append plain text to chat log and scroll so it is visible.
 // This is uses `Node.textContent = ...` to escape user input (anti-XSS precaution).
 function chatLogPlainText(unsafeMessage) {

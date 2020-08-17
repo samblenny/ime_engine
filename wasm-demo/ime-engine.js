@@ -47,7 +47,7 @@ function initSharedMemBindings(result) {
 const utf8enc = new TextEncoder();
 const utf8dec = new TextDecoder();
 
-// Synchronous message passing function for exchanging UTF-8 strings across WebAssembly VM sandbox boundary
+// Synchronous IPC query function to exchange UTF-8 strings across WebAssembly VM sandbox boundary
 //   str: string to be sent from JS --> WASM
 //   return: reply string from WASM --> JS
 export function syncMessages(str) {
