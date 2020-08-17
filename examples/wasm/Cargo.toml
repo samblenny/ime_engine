@@ -1,0 +1,19 @@
+[package]
+# Goal is to build "../../wasm-demo/ime-engine.wasm" WebAssembly library file
+name = "wasm"
+version = "0.0.0"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+path = "lib.rs"
+
+# Abuse dev profile so `cargo build` will produce a size optimized .wasm file
+# There are more important rustc flags in .cargo/config.toml
+[profile.dev]
+debug = 0
+debug-assertions = false
+lto = true
+
+[dependencies]
+ime-engine = { path = "../../" }

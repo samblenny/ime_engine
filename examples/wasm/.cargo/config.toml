@@ -1,0 +1,9 @@
+[build]
+target = "wasm32-unknown-unknown"
+incremental = false
+# 'link-args=-s' removes 10KB+ of debug symbols from linked core::*
+rustflags = [
+  "-C", "panic=abort",
+  "-C", "opt-level=s",
+  "-C", "link-arg=-s",
+]

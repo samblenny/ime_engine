@@ -1,4 +1,5 @@
-use crate::constants;
+extern crate ime_engine;
+use ime_engine::constants;
 
 // Shared memory buffers for interprocess communication between
 // WebAssembly VM host (javscript) and WASM module (ime-engine)
