@@ -139,7 +139,9 @@ cargo test
 1. From repository root directory:
    ```
    cd examples/wasm
-   make
+   make clean
+   make test
+   make wasm
    make install
    make webserver
    ```
