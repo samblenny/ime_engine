@@ -7,12 +7,22 @@ vocabulary data entry workflow (ruby) for developers who want to embed a
 lightweight, customizable IME into other software. Try the
 [WebAssembly demo](https://samblenny.github.io/ime-engine/wasm-demo/).
 
+## Status and Roadmap
+
+2020-09-13: ime-engine is on pause at the proof of concept stage. It works, but
+word list is small (HSK5). I may add HSK6 by some time in 2021.
+
+For now, this is a personal hobby project that fits into plans which I expect
+to unfold slowly (years). I do not intend to publish ime-engine as a crate, and
+I am not seeking contributions. But, you are welcome to use the code according
+to the terms of the license.
+
+
 ## Features
 
 ### Language Support
 - Now: Simplified Chinese with 2500 word HSK5 level vocabulary
-- Soon-ish: French
-- Maybe Later: 5000 word HSK6, Hangul, Hiragana, Katakana
+- Maybe Later: HSK6, Hangul, Hiragana, Katakana
 
 ### Design
 - Small and efficient (.wasm file with 2500 word vocab is 55 KB)
@@ -182,15 +192,3 @@ To use rustfmt to format an emacs buffer: `C-c C-f`
    ```
    By default, the script just checks the contents of the .tsv files for duplicates
    and other problems. To update `autogen_hsk.rs`, you must answer `y` at prompt.
-
-
-### Roadmap
-
-- [x] Phase 1: Proof of concept WASM demo page with terminal-style UI and
-      working IME for 1200 word HSK4 vocabulary.
-- [x] Phase 2: Tests, build workflow, and documentation for using ime-engine as
-      a library for building with and without no_std.
-- [x] Phase 3: Bigger vocabulary. At least HSK5 (2500).
-- [ ] Phase 4: Multi-language support (Chinese, English, Pinyin, French, etc.).
-- [ ] Phase 5: Maybe Korean and Japanese. Perhaps add support for Hangul,
-      Hiragana, and Katakana. Probably not Kanji though.
