@@ -1,7 +1,7 @@
 # Building for WASM is too awkward with cargo, so I use make.
 # See ./Makefile for WASM building details.
 [package]
-name = "ime-engine"
+name = "ime_engine"
 version = "0.1.0"
 authors = ["samblenny"]
 edition = "2018"
