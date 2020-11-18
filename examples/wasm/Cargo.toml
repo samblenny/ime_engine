@@ -1,5 +1,5 @@
 [package]
-# Goal is to build "../../wasm-demo/ime-engine.wasm" WebAssembly library file
+# Goal is to build "../../wasm-demo/ime_engine.wasm" WebAssembly library file
 name = "wasm"
 version = "0.0.0"
 publish = false
