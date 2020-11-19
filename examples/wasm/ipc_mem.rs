@@ -2,7 +2,7 @@ extern crate ime_engine;
 use ime_engine::constants;
 
 // Shared memory buffers for interprocess communication between
-// WebAssembly VM host (javscript) and WASM module (ime-engine)
+// WebAssembly VM host (javscript) and WASM module (ime_engine)
 // These ARE NOT thread safe! Be careful!
 pub const BUF_SIZE: usize = 150;
 pub static mut IN: [u8; constants::BUF_SIZE] = [0; constants::BUF_SIZE];

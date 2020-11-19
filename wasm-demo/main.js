@@ -1,5 +1,5 @@
 "use strict";
-import { loadIMEEngineWasm, syncMessages } from './ime-engine.js';
+import { loadIMEEngineWasm, syncMessages } from './ime_engine.js';
 
 // HTML UI elements for a chat window
 const chatLog = document.querySelector("#log");
@@ -39,10 +39,10 @@ function showHelp() {
 }
 
 function showAbout() {
-    const GHDHref = 'https://github.com/samblenny/ime-engine/tree/master/wasm-demo/';
-    const GHDLinkText = 'samblenny/ime-engine/wasm-demo';
-    const GHRHref = 'https://github.com/samblenny/ime-engine/tree/master/README.md';
-    const GHRLinkText = 'samblenny/ime-engine/README.md';
+    const GHDHref = 'https://github.com/samblenny/ime_engine/tree/master/wasm-demo/';
+    const GHDLinkText = 'samblenny/ime_engine/wasm-demo';
+    const GHRHref = 'https://github.com/samblenny/ime_engine/tree/master/README.md';
+    const GHRLinkText = 'samblenny/ime_engine/README.md';
     const WKHref = 'https://en.wikipedia.org/wiki/Input_method';
     const WKLinkText = 'Input Method Editor';
     // Look closely: This uses both template string (`...`) and regular ('...')

@@ -56,7 +56,7 @@ mod tests {
     use ime_engine::constants;
     use super::ipc_mem;
 
-    // Send query string to ime-engine; THIS IS NOT THREAD SAFE.
+    // Send query string to ime_engine; THIS IS NOT THREAD SAFE.
     // Returns: reply string.
     fn query(qry: &str) -> &str {
         // Encode UTF-8 bytes to inbox buffer

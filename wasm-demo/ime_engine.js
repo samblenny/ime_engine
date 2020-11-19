@@ -1,7 +1,7 @@
-// Relative URL to ime-engine WASM module
-const wasmModule = "ime-engine.wasm";
+// Relative URL to ime_engine WASM module
+const wasmModule = "ime_engine.wasm";
 
-// Load ime-engine WASM module, bind shared memory for IPC buffers, then invoke callback
+// Load ime_engine WASM module, bind shared memory for IPC buffers, then invoke callback
 export function loadIMEEngineWasm(callback) {
     var importObject = {
         js: {js_log_trace: (traceCode) => {
@@ -52,7 +52,7 @@ const utf8dec = new TextDecoder();
 //   return: reply string from WASM --> JS
 export function syncMessages(str) {
     if (!wasmInstanceReady) {
-        throw "syncMessages cannot talk to ime-engine.wasm because the wasm instance is not ready";
+        throw "syncMessages cannot talk to ime_engine.wasm because the wasm instance is not ready";
     }
     let utf8Message = utf8enc.encode(str);
     let querySize = 0;

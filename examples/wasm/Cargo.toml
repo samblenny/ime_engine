@@ -13,4 +13,4 @@ incremental = false
 lto = true
 
 [dependencies]
-ime-engine = { path = "../../" }
+ime_engine = { path = "../../" }

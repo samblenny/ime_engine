@@ -1,6 +1,6 @@
 WASM=target/wasm32-unknown-unknown/release/wasm.wasm
 DEST_DIR=../../wasm-demo
-DEST_WASM=$(DEST_DIR)/ime-engine.wasm
+DEST_WASM=$(DEST_DIR)/ime_engine.wasm
 
 # Build the WebAssembly file. This isn't the interesting part yet.
 .PHONY: wasm

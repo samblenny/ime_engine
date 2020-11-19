@@ -1,7 +1,7 @@
-// ime-engine CLI demo
+// ime_engine CLI demo
 use ime_engine;
 
-// Minimal example of using ime-engine as library with std and CLI
+// Minimal example of using ime_engine as library with std and CLI
 fn main() {
     let queries = &[
         &"woxiangheguozhi",
