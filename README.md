@@ -1,6 +1,11 @@
 # ime_engine
 
-![ime_engine WASM demo screenshot](demo-screenshot.jpg)
+## Project Status: Archived
+
+See https://github.com/samblenny/hanzi_ime
+
+
+## Description
 
 ime_engine provides an Input Method Editor back-end (rust) and a
 vocabulary data entry workflow (ruby) for a lightweight,
